@@ -1,640 +1,735 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>UDBO Project Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #1a3a5c;
-      --primary-light: #2355a0;
-      --accent: #e85d04;
-      --accent2: #f4a261;
-      --success: #2d6a4f;
-      --success-light: #52b788;
-      --warning: #d4a017;
-      --danger: #c1121f;
-      --bg: #f0f4f8;
-      --card: #ffffff;
-      --text: #1a2332;
-      --text-muted: #6b7a8d;
-      --border: #dde3ec;
-      --shadow: 0 2px 12px rgba(26,58,92,0.10);
-      --radius: 16px;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Syne', 'Noto Sans Devanagari', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    /* ======== LOGIN SCREEN ======== */
-    #login-screen {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(145deg, #1a3a5c 0%, #2355a0 60%, #e85d04 150%);
-      padding: 24px;
-    }
-    .login-logo {
-      width: 80px; height: 80px;
-      background: rgba(255,255,255,0.15);
-      border-radius: 24px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 36px;
-      margin-bottom: 16px;
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255,255,255,0.25);
-    }
-    .login-title {
-      color: #fff;
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      text-align: center;
-      margin-bottom: 4px;
-    }
-    .login-subtitle {
-      color: rgba(255,255,255,0.65);
-      font-size: 13px;
-      text-align: center;
-      margin-bottom: 36px;
-      font-weight: 400;
-    }
-    .login-card {
-      background: #fff;
-      border-radius: 24px;
-      padding: 32px 28px;
-      width: 100%;
-      max-width: 380px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-    .login-card h2 {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 24px;
-      color: var(--primary);
-    }
-    .form-group {
-      margin-bottom: 18px;
-    }
-    .form-group label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .form-group input {
-      width: 100%;
-      padding: 13px 16px;
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      font-size: 15px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.2s;
-      color: var(--text);
-      background: #f8fafc;
-    }
-    .form-group input:focus { border-color: var(--primary-light); background: #fff; }
-    .login-btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
-      margin-top: 8px;
-    }
-    .login-btn:active { transform: scale(0.98); }
-    .login-error {
-      background: #fee2e2;
-      color: var(--danger);
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      display: none;
-      text-align: center;
-    }
-    .login-hint {
-      margin-top: 16px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-    /* ======== MAIN APP ======== */
-    #app { display: none; min-height: 100vh; }
-    /* Header */
-    .app-header {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      padding: 16px 20px 20px;
-      position: sticky; top: 0; z-index: 100;
-    }
-    .header-top {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 12px;
-    }
-    .header-logo {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .header-logo-icon {
-      width: 38px; height: 38px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-    }
-    .header-logo-text {
-      color: #fff;
-      font-size: 16px;
-      font-weight: 800;
-    }
-    .header-logo-sub {
-      color: rgba(255,255,255,0.6);
-      font-size: 10px;
-      font-weight: 400;
-    }
-    .logout-btn {
-      background: rgba(255,255,255,0.15);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 7px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .logout-btn:hover { background: rgba(255,255,255,0.25); }
-    /* Search */
-    .search-bar {
-      background: rgba(255,255,255,0.15);
-      border: 1.5px solid rgba(255,255,255,0.3);
-      border-radius: 12px;
-      padding: 10px 14px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .search-bar input {
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #fff;
-      font-size: 14px;
-      font-family: inherit;
-      flex: 1;
-    }
-    .search-bar input::placeholder { color: rgba(255,255,255,0.55); }
-    .search-icon { font-size: 16px; color: rgba(255,255,255,0.7); }
-    /* Nav Tabs */
-    .nav-tabs {
-      display: flex;
-      background: #fff;
-      border-bottom: 2px solid var(--border);
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .nav-tabs::-webkit-scrollbar { display: none; }
-    .nav-tab {
-      flex: none;
-      padding: 12px 18px;
-      font-size: 13px;
-      font-weight: 700;
-      font-family: inherit;
-      color: var(--text-muted);
-      background: none;
-      border: none;
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-      transition: all 0.2s;
-      white-space: nowrap;
-      margin-bottom: -2px;
-    }
-    .nav-tab.active {
-      color: var(--primary-light);
-      border-bottom-color: var(--primary-light);
-    }
-    /* Content */
-    .app-content { padding: 16px; padding-bottom: 32px; }
-    /* Stats Grid */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .stat-card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 16px;
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-    }
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--accent-color, var(--accent));
-    }
-    .stat-label {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-    }
-    .stat-value {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--text);
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-    .stat-sub {
-      font-size: 10px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-    .stat-icon {
-      position: absolute;
-      top: 14px; right: 14px;
-      font-size: 24px;
-      opacity: 0.2;
-    }
-    /* Donut Chart */
-    .donut-section {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow);
-      margin-bottom: 20px;
-    }
-    .section-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 16px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .donut-wrapper {
-      display: flex; align-items: center; gap: 20px;
-    }
-    .donut-svg { flex: none; }
-    .donut-legend { flex: 1; }
-    .legend-item {
-      display: flex; align-items: center; gap: 8px;
-      margin-bottom: 8px;
-      font-size: 12px;
-    }
-    .legend-dot {
-      width: 10px; height: 10px; border-radius: 50%; flex: none;
-    }
-    .legend-label { color: var(--text-muted); flex: 1; }
-    .legend-value { font-weight: 700; color: var(--text); }
-    /* Budget Bar */
-    .budget-section {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow);
-      margin-bottom: 20px;
-    }
-    .budget-bar-wrap { margin-bottom: 12px; }
-    .budget-bar-label {
-      display: flex; justify-content: space-between;
-      font-size: 12px; margin-bottom: 6px;
-    }
-    .budget-bar-label span:first-child { color: var(--text-muted); font-weight: 600; }
-    .budget-bar-label span:last-child { color: var(--text); font-weight: 700; }
-    .budget-bar-bg {
-      height: 8px;
-      background: #e8edf3;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .budget-bar-fill {
-      height: 100%;
-      border-radius: 4px;
-      transition: width 0.6s ease;
-    }
-    /* District Bars */
-    .district-bar-row { margin-bottom: 12px; }
-    .district-bar-meta { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; font-weight: 600; }
-    .district-bar-label { color: var(--text); }
-    .district-bar-count { color: var(--text-muted); }
-    .district-bar-bg { height: 6px; background: #e8edf3; border-radius: 3px; overflow: hidden; }
-    .district-bar-fill { height: 100%; background: var(--primary-light); border-radius: 3px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>UDBO Project Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --primary-light: #2355a0;
+    --accent: #e85d04;
+    --accent2: #f4a261;
+    --success: #2d6a4f;
+    --success-light: #52b788;
+    --warning: #d4a017;
+    --danger: #c1121f;
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --text: #1a2332;
+    --text-muted: #6b7a8d;
+    --border: #dde3ec;
+    --shadow: 0 2px 12px rgba(26,58,92,0.10);
+    --radius: 16px;
+  }
 
-    /* Filter Row */
-    .filter-row {
-      display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto;
-      scrollbar-width: none; padding-bottom: 4px;
-    }
-    .filter-row::-webkit-scrollbar { display: none; }
-    .filter-chip {
-      flex: none;
-      padding: 7px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      font-family: inherit;
-      border: 2px solid var(--border);
-      background: var(--card);
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    .filter-chip.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: #fff;
-    }
-    /* Project Cards */
-    .project-card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 16px;
-      box-shadow: var(--shadow);
-      margin-bottom: 12px;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
-      border-left: 4px solid var(--status-color, var(--border));
-    }
-    .project-card:active { transform: scale(0.99); }
-    .project-card-top {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      margin-bottom: 8px;
-    }
-    .project-name {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text);
-      flex: 1;
-      line-height: 1.4;
-      padding-right: 8px;
-    }
-    .status-badge {
-      flex: none;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-    .badge-running { background: #dbeafe; color: #1e40af; }
-    .badge-complete { background: #d1fae5; color: #065f46; }
-    .badge-null { background: #f1f5f9; color: #64748b; }
-    .badge-completed { background: #d1fae5; color: #065f46; }
-    .project-meta {
-      display: flex; gap: 12px; flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-    .meta-item {
-      font-size: 11px;
-      color: var(--text-muted);
-      display: flex; align-items: center; gap: 4px;
-    }
-    .meta-item strong { color: var(--text); font-weight: 600; }
-    .progress-wrap { margin-top: 8px; }
-    .progress-label {
-      display: flex; justify-content: space-between;
-      font-size: 11px; margin-bottom: 4px;
-    }
-    .progress-label span { color: var(--text-muted); font-weight: 600; }
-    .progress-label strong { color: var(--primary-light); font-weight: 700; }
-    .progress-bg {
-      height: 6px;
-      background: #e8edf3;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      border-radius: 3px;
-      transition: width 0.4s ease;
-    }
-    /* Detail Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 200;
-      align-items: flex-end;
-      justify-content: center;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal-sheet {
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Syne', 'Noto Sans Devanagari', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ======== LOGIN SCREEN ======== */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #1a3a5c 0%, #2355a0 60%, #e85d04 150%);
+    padding: 24px;
+  }
+
+  .login-logo {
+    width: 80px; height: 80px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    margin-bottom: 16px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.25);
+  }
+
+  .login-title {
+    color: #fff;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .login-subtitle {
+    color: rgba(255,255,255,0.65);
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 36px;
+    font-weight: 400;
+  }
+
+  .login-card {
+    background: #fff;
+    border-radius: 24px;
+    padding: 32px 28px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  .login-card h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--primary);
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+    color: var(--text);
+    background: #f8fafc;
+  }
+
+  .form-group input:focus { border-color: var(--primary-light); background: #fff; }
+
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-top: 8px;
+  }
+
+  .login-btn:active { transform: scale(0.98); }
+
+  .login-error {
+    background: #fee2e2;
+    color: var(--danger);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: none;
+    text-align: center;
+  }
+
+  .login-hint {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ======== MAIN APP ======== */
+  #app { display: none; min-height: 100vh; }
+
+  /* Header */
+  .app-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    padding: 16px 20px 20px;
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .header-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .header-logo {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .header-logo-icon {
+    width: 38px; height: 38px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+
+  .header-logo-text {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .header-logo-sub {
+    color: rgba(255,255,255,0.6);
+    font-size: 10px;
+    font-weight: 400;
+  }
+
+  .logout-btn {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .logout-btn:hover { background: rgba(255,255,255,0.25); }
+
+  /* Search */
+  .search-bar {
+    background: rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(255,255,255,0.3);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .search-bar input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 14px;
+    font-family: inherit;
+    flex: 1;
+  }
+
+  .search-bar input::placeholder { color: rgba(255,255,255,0.55); }
+  .search-icon { font-size: 16px; color: rgba(255,255,255,0.7); }
+
+  /* Nav Tabs */
+  .nav-tabs {
+    display: flex;
+    background: #fff;
+    border-bottom: 2px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    flex: none;
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    margin-bottom: -2px;
+  }
+
+  .nav-tab.active {
+    color: var(--primary-light);
+    border-bottom-color: var(--primary-light);
+  }
+
+  /* Content */
+  .app-content { padding: 16px; padding-bottom: 32px; }
+
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent-color, var(--accent));
+  }
+
+  .stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-sub {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .stat-icon {
+    position: absolute;
+    top: 14px; right: 14px;
+    font-size: 24px;
+    opacity: 0.2;
+  }
+
+  /* Donut Chart */
+  .donut-section {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .donut-wrapper {
+    display: flex; align-items: center; gap: 20px;
+  }
+
+  .donut-svg { flex: none; }
+
+  .donut-legend { flex: 1; }
+
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex: none;
+  }
+
+  .legend-label { color: var(--text-muted); flex: 1; }
+  .legend-value { font-weight: 700; color: var(--text); }
+
+  /* Budget Bar */
+  .budget-section {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+  }
+
+  .budget-bar-wrap { margin-bottom: 12px; }
+  .budget-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 12px; margin-bottom: 6px;
+  }
+  .budget-bar-label span:first-child { color: var(--text-muted); font-weight: 600; }
+  .budget-bar-label span:last-child { color: var(--text); font-weight: 700; }
+
+  .budget-bar-bg {
+    height: 8px;
+    background: #e8edf3;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .budget-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s ease;
+  }
+
+  /* Filter Row */
+  .filter-row {
+    display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto;
+    scrollbar-width: none; padding-bottom: 4px;
+  }
+
+  .filter-row::-webkit-scrollbar { display: none; }
+
+  .filter-chip {
+    flex: none;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    border: 2px solid var(--border);
+    background: var(--card);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .filter-chip.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+  }
+
+  /* Project Cards */
+  .project-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    border-left: 4px solid var(--status-color, var(--border));
+  }
+
+  .project-card:active { transform: scale(0.99); }
+
+  .project-card-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .project-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+    line-height: 1.4;
+    padding-right: 8px;
+  }
+
+  .status-badge {
+    flex: none;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-running { background: #dbeafe; color: #1e40af; }
+  .badge-complete { background: #d1fae5; color: #065f46; }
+  .badge-null { background: #f1f5f9; color: #64748b; }
+  .badge-completed { background: #d1fae5; color: #065f46; }
+
+  .project-meta {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .meta-item {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  .meta-item strong { color: var(--text); font-weight: 600; }
+
+  .progress-wrap { margin-top: 8px; }
+
+  .progress-label {
+    display: flex; justify-content: space-between;
+    font-size: 11px; margin-bottom: 4px;
+  }
+
+  .progress-label span { color: var(--text-muted); font-weight: 600; }
+  .progress-label strong { color: var(--primary-light); font-weight: 700; }
+
+  .progress-bg {
+    height: 6px;
+    background: #e8edf3;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  /* Detail Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal-sheet {
+    background: #fff;
+    border-radius: 24px 24px 0 0;
+    width: 100%;
+    max-width: 480px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 20px;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .modal-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text);
+    flex: 1;
+    padding-right: 12px;
+    line-height: 1.4;
+  }
+
+  .modal-close {
+    background: var(--bg);
+    border: none;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex: none;
+  }
+
+  .detail-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+
+  .detail-row:last-child { border-bottom: none; }
+
+  .detail-key {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+    flex: none;
+    width: 110px;
+  }
+
+  .detail-val {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 600;
+    text-align: right;
+    flex: 1;
+    word-break: break-word;
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .no-data .icon { font-size: 40px; margin-bottom: 12px; }
+
+  .count-badge {
+    background: var(--primary);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-left: 6px;
+  }
+
+  /* ======== MODAL ACTION BUTTONS ======== */
+  .modal-actions {
+    display: flex; gap: 8px; margin-bottom: 18px;
+  }
+
+  .action-btn {
+    flex: 1;
+    padding: 10px 8px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+
+  .action-btn:active { transform: scale(0.97); }
+
+  .btn-edit {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 2px solid #bfdbfe;
+  }
+
+  .btn-print {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 2px solid #bbf7d0;
+  }
+
+  .btn-save {
+    background: var(--primary);
+    color: #fff;
+    border: 2px solid var(--primary);
+  }
+
+  .btn-cancel {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 2px solid #fecaca;
+  }
+
+  /* ======== EDIT FORM ======== */
+  .edit-form { display: none; }
+  .edit-form.active { display: block; }
+  .view-body.hidden { display: none; }
+
+  .edit-group {
+    margin-bottom: 14px;
+  }
+
+  .edit-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 5px;
+  }
+
+  .edit-group input,
+  .edit-group select,
+  .edit-group textarea {
+    width: 100%;
+    padding: 10px 13px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: 'Noto Sans Devanagari', 'Syne', sans-serif;
+    color: var(--text);
+    background: #f8fafc;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+
+  .edit-group input:focus,
+  .edit-group select:focus,
+  .edit-group textarea:focus {
+    border-color: var(--primary-light);
+    background: #fff;
+  }
+
+  .edit-section-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin: 20px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .save-success {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    display: none;
+    margin-bottom: 12px;
+  }
+
+  /* ======== PRINT STYLES ======== */
+  @media print {
+    body * { visibility: hidden; }
+    #print-area, #print-area * { visibility: visible; }
+    #print-area {
+      position: fixed; left: 0; top: 0;
+      width: 100%; padding: 20px;
       background: #fff;
-      border-radius: 24px 24px 0 0;
-      width: 100%;
-      max-width: 480px;
-      max-height: 85vh;
-      overflow-y: auto;
-      padding: 20px;
-      animation: slideUp 0.3s ease;
     }
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-    .modal-handle {
-      width: 40px; height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      margin: 0 auto 20px;
-    }
-    .modal-header {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      margin-bottom: 20px;
-    }
-    .modal-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--text);
-      flex: 1;
-      padding-right: 12px;
-      line-height: 1.4;
-    }
-    .modal-close {
-      background: var(--bg);
-      border: none;
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      font-size: 18px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      flex: none;
-    }
-    .detail-row {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-      gap: 12px;
-    }
-    .detail-row:last-child { border-bottom: none; }
-    .detail-key {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-weight: 600;
-      flex: none;
-      width: 110px;
-    }
-    .detail-val {
-      font-size: 13px;
-      color: var(--text);
-      font-weight: 600;
-      text-align: right;
-      flex: 1;
-      word-break: break-word;
-    }
-    .no-data {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-    .no-data .icon { font-size: 40px; margin-bottom: 12px; }
-    .count-badge {
-      background: var(--primary);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 10px;
-      margin-left: 6px;
-    }
-    /* ======== MODAL ACTION BUTTONS ======== */
-    .modal-actions {
-      display: flex; gap: 8px; margin-bottom: 18px;
-    }
-    .action-btn {
-      flex: 1;
-      padding: 10px 8px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      border: none;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      transition: transform 0.15s, opacity 0.15s;
-    }
-    .action-btn:active { transform: scale(0.97); }
-    .btn-edit {
-      background: #eff6ff;
-      color: #1d4ed8;
-      border: 2px solid #bfdbfe;
-    }
-    .btn-print {
-      background: #f0fdf4;
-      color: #15803d;
-      border: 2px solid #bbf7d0;
-    }
-    .btn-save {
-      background: var(--primary);
-      color: #fff;
-      border: 2px solid var(--primary);
-    }
-    .btn-cancel {
-      background: #fef2f2;
-      color: #b91c1c;
-      border: 2px solid #fecaca;
-    }
-    /* ======== EDIT FORM ======== */
-    .edit-form { display: none; }
-    .edit-form.active { display: block; }
-    .view-body.hidden { display: none; }
-    .edit-group {
-      margin-bottom: 14px;
-    }
-    .edit-group label {
-      display: block;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      margin-bottom: 5px;
-    }
-    .edit-group input,
-    .edit-group select,
-    .edit-group textarea {
-      width: 100%;
-      padding: 10px 13px;
-      border: 2px solid var(--border);
-      border-radius: 10px;
-      font-size: 14px;
-      font-family: 'Noto Sans Devanagari', 'Syne', sans-serif;
-      color: var(--text);
-      background: #f8fafc;
-      outline: none;
-      transition: border-color 0.2s;
-      resize: vertical;
-    }
-    .edit-group input:focus,
-    .edit-group select:focus,
-    .edit-group textarea:focus {
-      border-color: var(--primary-light);
-      background: #fff;
-    }
-    .edit-section-title {
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--primary);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin: 20px 0 12px;
-      padding-bottom: 6px;
-      border-bottom: 2px solid var(--border);
-    }
-    .save-success {
-      background: #d1fae5;
-      color: #065f46;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      text-align: center;
-      display: none;
-      margin-bottom: 12px;
-    }
-    /* ======== PRINT STYLES ======== */
-    @media print {
-      body * { visibility: hidden; }
-      #print-area, #print-area * { visibility: visible; }
-      #print-area {
-        position: fixed; left: 0; top: 0;
-        width: 100%; padding: 20px;
-        background: #fff;
-      }
-      .modal-overlay, .app-header, .nav-tabs, #login-screen { display: none !important; }
-    }
-    #print-area { display: none; }
-  </style>
+    .modal-overlay, .app-header, .nav-tabs, #login-screen { display: none !important; }
+  }
+
+  #print-area { display: none; }
+</style>
 </head>
 <body>
 
+<!-- ===== LOGIN SCREEN ===== -->
 <div id="login-screen">
   <div class="login-logo">🏗️</div>
   <div class="login-title">UDBO Project Portal</div>
@@ -659,6 +754,7 @@
   </div>
 </div>
 
+<!-- ===== MAIN APP ===== -->
 <div id="app">
   <div class="app-header">
     <div class="header-top">
@@ -679,12 +775,13 @@
 
   <div class="nav-tabs" id="nav-tabs">
     <button class="nav-tab active" onclick="switchTab('overview')">Overview</button>
-    <button class="nav-tab" onclick="switchTab('ncb')">NCB <span class="count-badge" id="ncb-count">0</span></button>
-    <button class="nav-tab" onclick="switchTab('sq')">SQ <span class="count-badge" id="sq-count">0</span></button>
-    <button class="nav-tab" onclick="switchTab('user')">User Committee <span class="count-badge" id="user-count">0</span></button>
+    <button class="nav-tab" onclick="switchTab('ncb')">NCB <span class="count-badge" id="ncb-count"></span></button>
+    <button class="nav-tab" onclick="switchTab('sq')">SQ <span class="count-badge" id="sq-count"></span></button>
+    <button class="nav-tab" onclick="switchTab('user')">User Committee</button>
   </div>
 
   <div class="app-content">
+    <!-- OVERVIEW TAB -->
     <div id="tab-overview">
       <div class="stats-grid">
         <div class="stat-card" style="--accent-color: #2355a0;">
@@ -694,7 +791,8 @@
           <div class="stat-sub">NCB + SQ + User</div>
         </div>
         <div class="stat-card" style="--accent-color: #2d6a4f;">
-          <span class="stat-icon">✅</span>          <div class="stat-label">Completed</div>
+          <span class="stat-icon">✅</span>
+          <div class="stat-label">Completed</div>
           <div class="stat-value" id="ov-complete">0</div>
           <div class="stat-sub">Fully done</div>
         </div>
@@ -757,22 +855,26 @@
       </div>
     </div>
 
+    <!-- NCB TAB -->
     <div id="tab-ncb" style="display:none;">
       <div class="filter-row" id="ncb-filters"></div>
       <div id="ncb-list"></div>
     </div>
 
+    <!-- SQ TAB -->
     <div id="tab-sq" style="display:none;">
       <div class="filter-row" id="sq-filters"></div>
       <div id="sq-list"></div>
     </div>
 
+    <!-- USER TAB -->
     <div id="tab-user" style="display:none;">
       <div id="user-list"></div>
     </div>
   </div>
 </div>
 
+<!-- DETAIL MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
   <div class="modal-sheet" id="modal-sheet">
     <div class="modal-handle"></div>
@@ -781,11 +883,13 @@
       <button class="modal-close" onclick="closeModalDirect()">✕</button>
     </div>
 
+    <!-- Action Buttons: View mode -->
     <div class="modal-actions" id="view-actions">
       <button class="action-btn btn-edit" onclick="enterEditMode()">✏️ Edit</button>
       <button class="action-btn btn-print" onclick="printProject()">🖨️ Print</button>
     </div>
 
+    <!-- Action Buttons: Edit mode -->
     <div class="modal-actions" id="edit-actions" style="display:none;">
       <button class="action-btn btn-save" onclick="saveEdits()">💾 Save Changes</button>
       <button class="action-btn btn-cancel" onclick="cancelEdit()">✕ Cancel</button>
@@ -793,12 +897,15 @@
 
     <div class="save-success" id="save-success">✅ Changes saved successfully!</div>
 
+    <!-- View mode body -->
     <div id="modal-body" class="view-body"></div>
 
+    <!-- Edit mode form -->
     <div id="edit-form" class="edit-form"></div>
   </div>
 </div>
 
+<!-- Hidden print area -->
 <div id="print-area"></div>
 
 <script>
@@ -808,26 +915,15 @@ const USERS = {
   'viewer': 'view123'
 };
 
-let currentUser = '';
-
 function doLogin() {
   const uid = document.getElementById('user-id').value.trim();
   const pwd = document.getElementById('password').value;
   const err = document.getElementById('login-error');
 
   if (USERS[uid] && USERS[uid] === pwd) {
-    currentUser = uid;
     err.style.display = 'none';
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
-    
-    // Toggle edit access based on credentials
-    if(currentUser === 'viewer') {
-      document.querySelector('.btn-edit').style.display = 'none';
-    } else {
-      document.querySelector('.btn-edit').style.display = 'flex';
-    }
-    
     initApp();
   } else {
     err.style.display = 'block';
@@ -847,750 +943,587 @@ function doLogout() {
   document.getElementById('password').value = '';
 }
 
-// ===== CORE DATA MANAGEMENT =====
-const RAW = {
-  "ncb": [
-    {
-      "id": 1,
-      "name": "Infrastructure Construction Work in Panchodaya Primary School Compound, Ward No. 4, Shikhar Municipality, Doti District",
-      "nameNp": "डोटी जिल्ला शिखर नगरपालिका वडा न ४ पञ्चोदय आधारभुत विद्यालय परिसरमा पूर्वाधार निर्माण कार्य",
-      "district": "डोटी",
-      "type": "भवन निर्माण (Building)",
-      "contractNo": "UDBO-Doti/NCB/Building/01/082/083/Doti",
-      "contractor": "HL Construction & Suppliers, Dipayal Silgadhi-04, Doti",
-      "owner": "Mr.Tej Bahadur Bohara",
-      "phone": "9858481322",
-      "email": "hlconstruction008@gmail.com",
-      "budget": 10000000.0,
-      "estimate": 11089607.46,
-      "contract": 8103065.93,
-      "payment": 0,
-      "progress": 0.5,
-      "startDate": "2026-04-01",
-      "endDate": "2026-06-29",
-      "status": "Running Project",
-      "remarks": "निर्माणाधिन",
-      "approver": "Division Chief Er. Govinda prasad Devkota"
-    },
-    {
-      "id": 2,
-      "name": "construction of Mureda-Aleban - Loligat-Lai -Nadi- Pipalla Roads, K. I. Singh Rural Mun. Doti",
-      "nameNp": "मुरेडा - अल्लेवन - लोलीघाटा - लाय - नादी - पिपल्ला सडक, डोटी",
-      "district": "डोटी",
-      "type": "सडक (Roads)",
-      "contractNo": "UDBO-Doti/NCB/Roads/02/082/083/Doti",
-      "contractor": "Jagannath Construction & Suppliers",
-      "owner": "Mr.Satish Khadka",
-      "phone": "9869443491",
-      "email": "chetkhadkadoti@gmail.com",
-      "budget": 2500000.0,
-      "estimate": 2436366.3,
-      "contract": 1644806.0,
-      "payment": 0,
-      "progress": 0.6,
-      "startDate": "2026-04-01",
-      "endDate": "2026-06-29",
-      "status": "Running Project",
-      "remarks": "निर्माण कार्य भैरहेको",
-      "approver": "Division Chief Er. Govinda prasad Devkota"
-    },
-    {
-      "id": 3,
-      "name": "Construction of Simachaur Ma. Bi. School Building and Finishing Works",
-      "nameNp": "डोटी जिल्ला बोगटान गाउँपालिका वडा नं १ सिमचौर मा.वि परिसरमा पूर्वाधार स्तरोन्नति कार्य",
-      "district": "डोटी",
-      "type": "भवन (Building)",
-      "contractNo": "UDBO-Doti/NCB/Building/03/082/083/Doti",
-      "contractor": "R. N. Nirman Sewa Pvt. Ltd.",
-      "owner": "Mr. Harka Bahadur Bist",
-      "phone": "9848540962",
-      "email": "chetkhadkadoti@gmail.com",
-      "budget": 10000000.0,
-      "estimate": 5695388.16,
-      "contract": 5695388.16,
-      "payment": 0,
-      "progress": 0.1,
-      "startDate": "2026-03-30",
-      "endDate": "2026-06-29",
-      "status": "Running Project",
-      "remarks": "निर्माण कार्य भैरहेको",
-      "approver": "Division Chief Er. Govinda prasad Devkota"
-    },
-    {
-      "id": 4,
-      "name": "Thati Deulikhad Road Construction Project",
-      "nameNp": "ठाटी देउलीखाद सडक निर्माण योजना साँफेबगर न पा १० र ११ अछाम",
-      "district": "अछाम",
-      "type": "सडक (Roads)",
-      "contractNo": "UDBO-Doti/NCB/Roads/04/082/083/Achham",
-      "contractor": "Malika Nirman Sewa, Achham",
-      "owner": "Mr.Bharat Bahadur Shah",
-      "phone": "9848681445",
-      "email": "malikanirmans@yahoo.com",
-      "budget": 4500000.0,
-      "estimate": 4380107.91,
-      "contract": 2722565.9,
-      "payment": 0,
-      "progress": 0.1,
-      "startDate": "2026-03-23",
-      "endDate": "2026-06-29",
-      "status": "Running Project",
-      "remarks": "निर्माण कार्य भैरहेको",
-      "approver": null
-    },
-    {
-      "id": 5,
-      "name": "Gairilekh–Lugada Road Upgrading, Chaurpati Ward No. 1, Achham.",
-      "nameNp": "गैरीलेक लुगाडा सडक स्तरोन्नति चौरपाटी १ अछाम",
-      "district": "अछाम",
-      "type": "सडक (Roads)",
-      "contractNo": "UDBO-Doti/NCB/Roads/05/082/083/Achham",
-      "contractor": "Malika Nirman Sewa, Achham",
-      "owner": "Mr.Bharat Bahadur Shah",
-      "phone": "9848681445",
-      "email": "malikanirmans@yahoo.com",
-      "budget": 2500000.0,
-      "estimate": 2434585.39,
-      "contract": 1401653.0,
-      "payment": 1172103.4,
-      "progress": 1.0,
-      "startDate": "2026-03-23",
-      "endDate": "2026-06-29",
-      "status": "Complete",
-      "remarks": "निर्माण कार्य complete",
-      "approver": "Division Chief Er. Govinda prasad Devkota"
-    },
-    {
-      "id": 6,
-      "name": "Deulikhad–Vijaypur Road Construction Project",
-      "nameNp": "देउलीखाद विजयपुर सडक निर्माण योजना साँफेबगर न पा ११ अछाम",
-      "district": "अछाम",
-      "type": "सडक (Roads)",
-      "contractNo": "UDBO-Doti/NCB/Roads/06/082/083/Achham",
-      "contractor": "Shodashadevi Nirman Sewa Pvt. Ltd., Achham",
-      "owner": "Mr.Gokul Bhat",
-      "phone": "9865652377",
-      "email": "bhatgokul35@gmail.com",
-      "budget": 2500000.0,
-      "estimate": 2431728.42,
-      "contract": 1664845.04,
-      "payment": 0,
-      "progress": 0.2,
-      "startDate": "2026-04-04",
-      "endDate": "2026-06-29",
-      "status": "Running Project",
-      "remarks": "Original Bank guarantee not submitted in office",
-      "approver": "Division Chief Er. Govinda prasad Devkota"
-    },
-    {
-      "id": 7,
-      "name": "Babla–Deval–Putru–Bherasain Road Construction Project, Safebagar Municipality Wards No. 12 and 13, Achham.",
-      "nameNp": "बाब्ला देवल पुत्रु भेरासैन सडक निर्माण योजना साँफेबगर न पा १२ र १३ अछाम",
-      "district": "अछाम",
-      "type": "सडक (Roads)",
-      "contractNo": "UDBO-Doti/NCB/Roads/07/082/083/Achham",
-      "contractor": "Khaptad Baba Nirman sewa & order Suppliers, bajura",
-      "owner": "Mr.Bikram Rawal",
-      "phone": "9843413182",
-      "email": "rawalbikram33@gmail.com",
-      "budget": 2500000.0,
-      "estimate": 2432474.45,
-      "contract": 1678212.54,
-      "payment": 1427149.96,
-      "progress": 1.0,
-      "startDate": "2026-04-06",
-      "endDate": "2026-06-29",
-      "status": "Complete",
-      "remarks": "निर्माण कार्य सम्पन्न",
-      "approver": "Division Chief Er. Govinda prasad Devkota"
-    },
-    {
-      "id": 8,
-      "name": "Road Construction Project from Khaptad Gulum to Saraswati Primary School",
-      "nameNp": "खप्तड गुल्म हुदै सरस्वती आ वि सम्म सडक निर्माण योजना साँफेबगर न पा ७ अछाम",
-      "district": "अछाम",
-      "type": "सडक (Roads)",
-      "contractNo": "UDBO-Doti/NCB/Roads/08/082/083/Achham",
-      "contractor": "Indrasara Construction, Achham",
-      "owner": "Mr.Ashok Shah",
-      "phone": "9849158427",
-      "email": "indrasaraconstruction@gmail.com",
-      "budget": 2500000.0,
-      "estimate": 2435059.84,
-      "contract": 1457503.6,
-      "payment": 0,
-      "progress": 0.6,
-      "startDate": "2026-04-07",
-      "endDate": "2026-06-29",
-      "status": "Running Project",
-      "remarks": "बैंक ग्यारेण्टी र Insurance नआएको",
-      "approver": "Division Chief Er. Govinda prasad Devkota"
-    },
-    {
-      "id": 9,
-      "name": "Road Construction from Daygada Dhokdina to Baskatiya",
-      "nameNp": "दयगडा ढोकदिना देखि बासकाटिया सम्म सडक निर्माण सा नपा ०३ अछाम",
-      "district": "अछाम",
-      "type": "सडक (Roads)",
-      "contractNo": "UDBO-Doti/NCB/Roads/09/082/083/Achham",
-      "contractor": "Malika Nirman Sewa, Achham",
-      "owner": "Mr.Bharat Bahadur Shah",
-      "phone": "9848681445",
-      "email": "malikanirmans@yahoo.com",
-      "budget": 4000000.0,
-      "estimate": 3895297.79,
-      "contract": 2373544.72,
-      "payment": 0,
-      "progress": 1.0,
-      "startDate": "2026-04-08",
-      "endDate": "2026-06-29",
-      "status": "Complete",
-      "remarks": "भुक्तानी गरिएको",
-      "approver": "Division Chief Er. Govinda prasad Devkota"
-    },
-    {
-      "id": 10,
-      "name": "Martadi Multipurpose Sports Ground Construction",
-      "nameNp": "मार्तडी बहुउद्देश्यीय खेलमैदान निर्माण, बाजुरा",
-      "district": "बाजुरा",
-      "type": "खेलमैदान (Playground)",
-      "contractNo": "UDBO-Doti/NCB/Playground/10/082/083/Bajura",
-      "contractor": "T.S. Construction & Oder Suppliers, Bajura",
-      "owner": "Mrs.Tara Kumari Rokaya",
-      "phone": "9858480801",
-      "email": "santoshdadal01@gmail.com",
-      "budget": 2500000.0,
-      "estimate": 2422609.41,
-      "contract": 1159827.7,
-      "payment": 0,
-      "progress": 0.3,
-      "startDate": "2026-04-09",
-      "endDate": "2026-06-29",
-      "status": "Running Project",
-      "remarks": "Insurance and signboard pending",
-      "approver": "Division Chief Er. Govinda prasad Devkota"
-    },
-    {
-      "id": 11,
-      "name": "Trail Construction from Halane to Bageshwar",
-      "nameNp": "हलाने देखि भागेश्वर सम्म पदमार्ग निर्माण डडेल्धुरा",
-      "district": "डडेल्धुरा",
-      "type": "सडक (Roads)",
-      "contractNo": "UDBO-Doti/NCB/Roads/11/082/083/Dadeldhura",
-      "contractor": "Omtara Constrution, Dadeldhura",
-      "owner": "Mr.Sher Bahadur Dhat",
-      "phone": "9865918845",
-      "email": "rupacdadeldhura@gmail.com",
-      "budget": 2500000.0,
-      "estimate": 2401289.78,
-      "contract": 2029611.93,
-      "payment": 0,
-      "progress": 0.7,
-      "startDate": "2026-04-10",
-      "endDate": "2026-06-29",
-      "status": "Running Project",
-      "remarks": "निर्माण कार्य भैरहेको",
-      "approver": "Division Chief Er. Govinda prasad Devkota"
-    },
-    {
-      "id": 12,
-      "name": "Road Upgrading Work from Bagbazar to Thalouta",
-      "nameNp": "डडेलधुरा जिल्ला अमरगढी नगरपालिका वडा न १ बागवजार थलौटा सडक स्तरोन्नति कार्य",
-      "district": "डडेल्धुरा",
-      "type": "सडक (Roads)",
-      "contractNo": "UDBO-Doti/NCB/Roads/12/082/083/Dadeldhura",
-      "contractor": "Himanshu Engineering Consultancy and Construction, Dadeldhura",
-      "owner": "Mr.Surendra Bahadur Bist",
-      "phone": "9851190048",
-      "email": "gauli.surendra@gmail.com",
-      "budget": 10000000.0,
-      "estimate": 9739208.32,
-      "contract": 5640683.79,
-      "payment": 0,
-      "progress": 0.4,
-      "startDate": "2026-04-11",
-      "endDate": "2026-06-29",
-      "status": "Running Project",
-      "remarks": "निर्माण कार्य भैरहेको",
-      "approver": "Division Chief Er. Govinda prasad Devkota"
-    },
-    {
-      "id": 13,
-      "name": "Road Upgrading Work: Bagarkot Seragad Webal Seragah Ninali Pilkot",
-      "nameNp": "डडेल्धुरा जिल्ला अजयमेरु ग़उँपालिका बगरकोट, सेरागाड, वेवल, सेरागाह निनाली, पिलकोट सडक स्तरोन्नति कार्य।",
-      "district": "डडेल्धुरा",
-      "type": "सडक (Roads)",
-      "contractNo": "UDBO/Works/NCB/Roads/13/082/083/Dadeldhura",
-      "contractor": "Bipin Nirman Sewa, Dadeldhura",
-      "owner": "Mr.Janak Bahadur Dhanuk",
-      "phone": "9864766779",
-      "email": "bipinnirmansewa08@gmail.com",
-      "budget": 16000000.0,
-      "estimate": 15569083.67,
-      "contract": 8855610.07,
-      "payment": 0,
-      "progress": 0.4,
-      "startDate": "2026-04-12",
-      "endDate": "2026-06-29",
-      "status": "Running Project",
-      "remarks": "निर्माण कार्य भैरहेको",
-      "approver": "Division Chief Er. Govinda prasad Devkota"
-    },
-    {
-      "id": 14,
-      "name": "Construction of Mangalsen Bus Park and Drainage Management",
-      "nameNp": "अछाम जिल्ला मंगलसेन नगरपालिका वडा न ३ मंगलसेन बसपार्क निर्माण तथा नाली व्यवस्थापन",
-      "district": "अछाम",
-      "type": "बसपार्क (Buspark)",
-      "contractNo": "UDBO-Doti/NCB/Buspark/14/082/083/Achham",
-      "contractor": "Padmaratna Construction and Consultants Pvt. Ltd., Achham",
-      "owner": "Mr.Dipa Khatri Thapa",
-      "phone": "9865745705",
-      "email": "nbthapa2079@gmail.com",
-      "budget": 16000000.0,
-      "estimate": 15579153.92,
-      "contract": 9395599.36,
-      "payment": 0,
-      "progress": 0.1,
-      "startDate": "2026-04-13",
-      "endDate": "2026-06-29",
-      "status": "Running Project",
-      "remarks": "निर्माण कार्य भैरहेको",
-      "approver": "Division Chief Er. Govinda prasad Devkota"
-    },
-    {
-      "id": 15,
-      "name": "Road Upgrading Works at Liudemela–Dhaulakada Road",
-      "nameNp": "बु.न.पा. ८, ९ ल्यूडेमेला धौलाकडा सडक स्तरोन्नति",
-      "district": "बाजुरा",
-      "type": "सडक (Roads)",
-      "contractNo": "UDBO-Doti/NCB/Roads/15/082/083/Bajura",
-      "contractor": "Kankrebihar Nirman Sewa",
-      "owner": "Mr. Tek Bahadur Thapa",
-      "phone": "9851000000",
-      "email": "kankre@gmail.com",
-      "budget": 5000000.0,
-      "estimate": 4950000.00,
-      "contract": 3850000.00,
-      "payment": 0,
-      "progress": 0.25,
-      "startDate": "2026-04-15",
-      "endDate": "2026-07-15",
-      "status": "Running Project",
-      "remarks": "प्रारम्भिक चरणमा",
-      "approver": "Division Chief Er. Govinda prasad Devkota"
-    }
-  ],
-  "sq": [],
-  "user": []
+// ===== DATA =====
+const RAW = {"ncb":[{"name":"Infrastructure Construction Work in Panchodaya Primary School Compound, Ward No. 4, Shikhar Municipality, Doti District","nameNp":"डोटी जिल्ला शिखर नगरपालिका वडा न ४ पञ्चोदय आधारभुत विद्यालय परिसरमा पूर्वाधार निर्माण कार्य","district":"डोटी","type":"भवन निर्माण (Building)","contractNo":"UDBO-Doti/NCB/Building/01/082/083/Doti","contractor":"HL Construction & Suppliers, Dipayal Silgadhi-04, Doti","owner":"Mr.Tej Bahadur Bohara","phone":9858481322.0,"email":"hlconstruction008@gmail.com","budget":10000000.0,"estimate":11089607.46,"contract":8103065.93,"payment":null,"progress":0.5,"startDate":"2026-04-01","endDate":"2026-06-29","status":"Running Project","remarks":"निर्माणाधिन","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"construction of Mureda-Aleban - Loligat-Lai -Nadi- Pipalla Roads, K. I. Singh Rural Mun. Doti","nameNp":"मुरेडा - अल्लेवन - लोलीघाटा - लाय - नादी - पिपल्ला सडक, डोटी","district":"डोटी","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Roads/02/082/083/Doti","contractor":"Jagannath Construction & Suppliers","owner":"Mr.Satish Khadka","phone":9869443491.0,"email":"chetkhadkadoti@gmail.com","budget":2500000.0,"estimate":2436366.3,"contract":1644806.0,"payment":null,"progress":0.6,"startDate":"2026-04-01","endDate":"2026-06-29","status":"Running Project","remarks":"निर्माण कार्य भैरहेको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Construction of Simachaur Ma. Bi. School Building and Finishing Works","nameNp":"डोटी जिल्ला बोगटान गाउँपालिका वडा नं १ सिमचौर मा.वि परिसरमा पूर्वाधार स्तरोन्नति कार्य","district":"डोटी","type":"भवन (Building)","contractNo":"UDBO-Doti/NCB/Building/03/082/083/Doti","contractor":"R. N. Nirman Sewa Pvt. Ltd.","owner":"Mr. Harka Bahadur Bist","phone":9848540962.0,"email":"chetkhadkadoti@gmail.com","budget":10000000.0,"estimate":5695388.16,"contract":5695388.16,"payment":null,"progress":0.1,"startDate":"2026-03-30","endDate":"2026-06-29","status":"Running Project","remarks":"निर्माण कार्य भैरहेको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Thati Deulikhad Road Construction Project","nameNp":"ठाटी देउलीखाद सडक निर्माण योजना साँफेबगर न पा १० र ११ अछाम","district":"अछाम","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Roads/04/082/083/Achham","contractor":"Malika Nirman Sewa, Achham","owner":"Mr.Bharat Bahadur Shah","phone":9848681445.0,"email":"malikanirmans@yahoo.com","budget":4500000.0,"estimate":4380107.91,"contract":2722565.9,"payment":null,"progress":0.1,"startDate":"2026-03-23","endDate":"2026-06-29","status":"Running Project","remarks":"निर्माण कार्य भैरहेको","approver":null},{"name":"Gairilekh–Lugada Road Upgrading, Chaurpati Ward No. 1, Achham.","nameNp":"गैरीलेक लुगाडा सडक स्तरोन्नति चौरपाटी १ अछाम","district":"अछाम","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Roads/05/082/083/Achham","contractor":"Malika Nirman Sewa, Achham","owner":"Mr.Bharat Bahadur Shah","phone":9848681445.0,"email":"malikanirmans@yahoo.com","budget":2500000.0,"estimate":2434585.39,"contract":1401653.0,"payment":1172103.4,"progress":1.0,"startDate":"2026-03-23","endDate":"2026-06-29","status":"Complete","remarks":"निर्माण कार्य complete","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Deulikhad–Vijaypur Road Construction Project","nameNp":"देउलीखाद विजयपुर सडक निर्माण योजना साँफेबगर न पा ११ अछाम","district":"अछाम","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Roads/06/082/083/Achham","contractor":"Shodashadevi Nirman Sewa Pvt. Ltd., Achham","owner":"Mr.Gokul Bhat","phone":9865652377.0,"email":"bhatgokul35@gmail.com","budget":2500000.0,"estimate":2431728.42,"contract":1664845.04,"payment":null,"progress":0.2,"startDate":"2026-04-04","endDate":"2026-06-29","status":"Running Project","remarks":"Original Bank garuntee not submitted in office and insurance is not be made","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Babla–Deval–Putru–Bherasain Road Construction Project, Safebagar Municipality Wards No. 12 and 13, Achham.","nameNp":"बाब्ला देवल पुत्रु भेरासैन सडक निर्माण योजना साँफेबगर न पा १२ र १३ अछाम","district":"अछाम","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Roads/07/082/083/Achham","contractor":"Khaptad Baba Nirman sewa & order Suppliers, bajura","owner":"Mr.Bikram Rawal","phone":9843413182.0,"email":"rawalbikram33@gmail.com","budget":2500000.0,"estimate":2432474.45,"contract":1678212.54,"payment":1427149.96,"progress":1.0,"startDate":"2026-04-06","endDate":"2026-06-29","status":"Complete","remarks":"निर्माण कार्य भैरहेको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Road Construction Project from Khaptad Gulum to Saraswati Primary School","nameNp":"खप्तड गुल्म हुदै सरस्वती आ वि सम्म सडक निर्माण योजना साँफेबगर न पा ७ अछाम","district":"अछाम","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Roads/08/082/083/Achham","contractor":"Indrasara Construction, Achham","owner":"Mr.Ashok Shah","phone":9849158427.0,"email":"indrasaraconstruction@gmail.com","budget":2500000.0,"estimate":2435059.84,"contract":1457503.6,"payment":null,"progress":0.6,"startDate":"2026-04-07","endDate":"2026-06-29","status":"Running Project","remarks":"Original बैंक ग्यारेण्टी नआएको र Insurance पनि नआएको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Road Construction from Daygada Dhokdina to Baskatiya","nameNp":"दयगडा ढोकदिना देखि बासकाटिया सम्म सडक निर्माण सा नपा ०३ अछाम","district":"अछाम","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Roads/09/082/083/Achham","contractor":"Malika Nirman Sewa, Achham","owner":"Mr.Bharat Bahadur Shah","phone":9848681445.0,"email":"malikanirmans@yahoo.com","budget":4000000.0,"estimate":3895297.79,"contract":2373544.72,"payment":null,"progress":1.0,"startDate":"2026-04-08","endDate":"2026-06-29","status":"Complete","remarks":"भुक्तानी गरिएको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Martadi Multipurpose Sports Ground Construction","nameNp":"मार्तडी बहुउद्देश्यीय खेलमैदान निर्माण, बाजुरा","district":"बाजुरा","type":"खेलमैदान (Playground)","contractNo":"UDBO-Doti/NCB/Playground/10/082/083/Bajura","contractor":"T.S. Construction & Oder Suppliers, Bajura","owner":"Mrs.Tara Kumari Rokaya","phone":9858480801.0,"email":"santoshdadal01@gmail.com","budget":2500000.0,"estimate":2422609.41,"contract":1159827.7,"payment":null,"progress":0.3,"startDate":"2026-04-09","endDate":"2026-06-29","status":"Running Project","remarks":"Insurance not made and also signboard","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Trail Construction from Halane to Bageshwar","nameNp":"हलाने देखि भागेश्वर सम्म पदमार्ग निर्माण डडेल्धुरा","district":"डडेल्धुरा","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Roads/11/082/083/Dadeldhura","contractor":"Omtara Constrution, Dadeldhura","owner":"Mr.Sher Bahadur Dhat","phone":9865918845.0,"email":"rupacdadeldhura@gmail.com","budget":2500000.0,"estimate":2401289.78,"contract":2029611.93,"payment":null,"progress":0.7,"startDate":"2026-04-10","endDate":"2026-06-29","status":"Running Project","remarks":"निर्माण कार्य भैरहेको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Road Upgrading Work from Bagbazar to Thalouta","nameNp":"डडेलधुरा जिल्ला अमरगढी नगरपालिका वडा न १ बागवजार थलौटा सडक स्तरोन्नति कार्य","district":"डडेल्धुरा","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Roads/12/082/083/Dadeldhura","contractor":"Himanshu Engineering Consultancy and Construction, Dadeldhura","owner":"Mr.Surendra Bahadur Bist","phone":9851190048.0,"email":"gauli.surendra@gmail.com","budget":10000000.0,"estimate":9739208.32,"contract":5640683.79,"payment":null,"progress":0.4,"startDate":"2026-04-11","endDate":"2026-06-29","status":"Running Project","remarks":"निर्माण कार्य भैरहेको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Road Upgrading Work: Bagarkot Seragad Webal Seragah Ninali Pilkot","nameNp":"डडेल्धुरा जिल्ला अजयमेरु ग़उँपालिका बगरकोट, सेरागाड, वेवल, सेरागाह निनाली, पिलकोट सडक स्तरोन्नति कार्य।","district":"डडेल्धुरा","type":"सडक (Roads)","contractNo":"UDBO/Works/NCB/Roads/13/082/083/Dadeldhura","contractor":"Bipin Nirman Sewa, Dadeldhura","owner":"Mr.Janak Bahadur Dhanuk","phone":9864766779.0,"email":"bipinnirmansewa08@gmail.com","budget":16000000.0,"estimate":15569083.67,"contract":8855610.07,"payment":null,"progress":0.4,"startDate":"2026-04-12","endDate":"2026-06-29","status":"Running Project","remarks":"निर्माण कार्य भैरहेको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Construction of Mangalsen Bus Park and Drainage Management","nameNp":"अछाम जिल्ला मंगलसेन नगरपालिका वडा न ३ मंगलसेन बसपार्क निर्माण तथा नाली व्यवस्थापन","district":"अछाम","type":"बसपार्क (Buspark)","contractNo":"UDBO-Doti/NCB/Buspark/14/082/083/Achham","contractor":"Padmaratna Construction and Consultants Pvt. Ltd., Achham","owner":"Mr.Dipa Khatri Thapa","phone":9865745705.0,"email":"nbthapa2079@gmail.com","budget":16000000.0,"estimate":15579153.92,"contract":9395599.36,"payment":null,"progress":0.1,"startDate":"2026-04-13","endDate":"2026-06-29","status":null,"remarks":"निर्माण कार्य भैरहेको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Road Upgrading Works at Liudemela–Dhaulakada Road","nameNp":"बु.न.पा.८, ९, १० र ११ मा लिउडेमेला, धौलाकाड़ा सड़क स्तरोन्नती कार्य","district":"बाजुरा","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Roads/15/082/083/Bajura","contractor":"New Kalika Nirman Sewa, Bajura","owner":"Mr.Santosh dahal","phone":9847727831.0,"email":"9749017431lb@gmail.com","budget":2500000.0,"estimate":2440150.5,"contract":2326268.72,"payment":null,"progress":0.1,"startDate":"2026-04-14","endDate":"2026-06-29","status":null,"remarks":"निर्माण कार्य भैरहेको","approver":null},{"name":"Dehapata Tolena Road Construction Project","nameNp":"दहपाटा तोलेना सडक निर्माण योजना साँफेबगर न पा ५ अछाम","district":"अछाम","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Roads/16/082/083/Achham","contractor":"MUNA NIRMAN SEWA, SanfeBgar-5,Achham","owner":"Mr.Krishana Bohara","phone":9840405358.0,"email":"krishna.bohara2014@gmail.com","budget":2500000.0,"estimate":2433728.12,"contract":1703433.4,"payment":1448912.88,"progress":1.0,"startDate":"2026-04-15","endDate":"2026-06-29","status":"Complete","remarks":"निर्माण कार्य सम्पन्न","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Construction and Maintenance of Road and Drain at Different Province Office","nameNp":"डोटि जिल्ला दि सि न पा अन्तर्गत रहेका प्रदेश कार्यालयहरु सम्म जाने पक्कि सडक नालि मर्मत तथा निर्माण","district":"डोटी","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Roads/17/082/083/Doti","contractor":"J.S.Construction,punna,Doti","owner":"Mr.Dambar Bahadur Bist","phone":9848478556.0,"email":"constructionjs77@gmail.com","budget":3500000.0,"estimate":3410928.69,"contract":2951869.44,"payment":null,"progress":0.3,"startDate":"2026-04-16","endDate":"2026-06-29","status":null,"remarks":"निर्माण कार्य भैरहेको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Bayalpata Covered Hall","nameNp":"बयलपाटा कभर्डहल सा. न. पा. ८, अछाम","district":"अछाम","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Roads/18/082/083/Achham","contractor":"Siddhababa Layanti Engineering Construction and Consultancy pvt.ltd","owner":"Mr Ram Bahadur Karki","phone":9852822675.0,"email":"karkirambahadur915@gmail.com","budget":2500000.0,"estimate":2422847.74,"contract":1669231.7,"payment":null,"progress":0.1,"startDate":"2026-04-22","endDate":"2026-06-29","status":null,"remarks":"निर्माण कार्य भैरहेको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Upgrading Works of Talkot–Dhurkot Road","nameNp":"डोटी जिल्ला शिखर नगरपालिका वडा न ३ तल्कोट-धुरकोट सडक स्तरोन्नति कार्य","district":"डोटी","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Roads/19/082/083/Doti","contractor":"Shailawati Nirman Sewa","owner":"Mr Ammar Raj Upadhaya","phone":9858489073.0,"email":"nirmandoti@gmail.com","budget":16000000.0,"estimate":15575170.46,"contract":7972147.03,"payment":null,"progress":0.46,"startDate":"2026-04-22","endDate":"2026-06-29","status":null,"remarks":"निर्माण कार्य भैरहेको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Construction of the Incomplete Ward Office Building of Ward No. 8 Shikhar Municipality","nameNp":"शिखर नगरपालिका वडा नं. ८ को वडा कार्यालयको अधुरो भवन निर्माण शिखर ८ डोटी","district":"डोटी","type":"भवन निर्माण (Building)","contractNo":"UDBO-Doti/NCB/Works/20/082/083/Doti","contractor":"Durga Construction and Supplyer, Doti","owner":"Mr.Lok Bahadur Majhi","phone":9812630326.0,"email":"durgaconstr@gmail.com","budget":2000000.0,"estimate":2180710.09,"contract":1739340.31,"payment":null,"progress":0.1,"startDate":"2026-04-17","endDate":"2026-06-29","status":null,"remarks":"निर्माण कार्य भैरहेको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Construction of Ward Office Building Ward No. 07 Ramaroshan Rural Municipality","nameNp":"वाडा र्कार्यालय भवन निर्माण रामारोशन ०७ आछाम","district":"अछाम","type":"भवन निर्माण (Building)","contractNo":"UDBO-Doti/NCB/Works/21/082/083/Achham","contractor":"Ramaroshan Construction","owner":"Mr.Dammer Bahadur Rokaya","phone":9858484546.0,"email":"rdambar2013@gmail.com","budget":4000000.0,"estimate":3891903.77,"contract":1644806.0,"payment":null,"progress":0.1,"startDate":"2026-04-21","endDate":"2026-06-29","status":null,"remarks":"Drawing provide garnu parney","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Construction of Playground at Parbati Secondary School","nameNp":"बाजुरा जिल्ला पार्वति मा. वि. मा खेलमैदान निर्माण कार्य","district":"डोटी","type":"खेलमैदान (Playground)","contractNo":"UDBO-Doti/NCB/Works/22/082/083/Bajura","contractor":"U B Construction and order Suppliers","owner":"Mr.Umesh Bahadur Karki","phone":9868508353.0,"email":"ubconstruction78@gmail.com","budget":2500000.0,"estimate":2431060.84,"contract":1293128.0,"payment":null,"progress":0.1,"startDate":"2026-04-15","endDate":"2026-06-29","status":null,"remarks":"Insurance and signboard remaining","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Construction of Dalit Community Cremation House (Kriyaghar)","nameNp":"दलित टोल कृयाघर निर्माण त्रिवेणी नगरपालिका वडा न ९ ,बाजुरा","district":"बाजुरा","type":"भवन (Building)","contractNo":"UDBO-Doti/NCB/Works/23/082/083/Bajura","contractor":"Summit Peak Engineering Consultancy Pvt. Ltd.","owner":"Mr. Dipesh Kuinkel","phone":9851177291.0,"email":"summitpeak11@gmail.com","budget":2500000.0,"estimate":2170388.02,"contract":1262285.03,"payment":null,"progress":0.1,"startDate":"2026-04-22","endDate":"2026-06-29","status":null,"remarks":"निर्माण कार्य भैरहेको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Construction of Different infrastructure work Related to Saraswati Secondary School Playground","nameNp":"सरस्वती मा.वि. खेलमैदान , डोटी","district":"डोटी","type":"खेलमैदान (Playground)","contractNo":"UDBO-Doti/NCB/Works/24/082/083/Doti","contractor":"Om simail Construction & Suppliers","owner":"Mr.Saraswati Kumari Khadka","phone":9860434576.0,"email":"omsimailconstruction@gmail.com","budget":2500000.0,"estimate":2435770.73,"contract":1984309.69,"payment":null,"progress":0.6,"startDate":"2026-04-16","endDate":"2026-06-29","status":null,"remarks":"निर्माण कार्य भैरहेको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Construction of Laboratory Building at Khaptad Engineering Campus","nameNp":"खप्तड इन्जिनियरिङ्ग क्यामपस प्रयोगशाला भवन निर्माण दि सि न पा ०६ डोटी","district":"डोटी","type":"भवन निर्माण (Building)","contractNo":"UDBO-Doti/NCB/Works/25/082/083/Doti","contractor":"RR Construction and Suppliers,Doti","owner":"Mrs.Kaushila Rawat","phone":9848434947.0,"email":"amarrawat2012@gmail.com","budget":5000000.0,"estimate":5703503.83,"contract":4417246.16,"payment":null,"progress":0.25,"startDate":"2026-04-17","endDate":"2026-06-29","status":null,"remarks":"निर्माण कार्य भैरहेको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Koral Khola Playground Construction & Deval Tourist Infrastructure Park Construction, Dadeldhura","nameNp":"कोराल खोला खेल मैदान निर्माण गन्यापधुरा गा पा ०५, देवल पर्यटक पूर्वाधार सहित पार्क निर्माण डडेल्धुरा","district":"डडेल्धुरा","type":"खेलमैदान (Playground)","contractNo":"UDBO-Doti/NCB/Works/26/082/083/Dadeldhura","contractor":"K.S.Square Construction And Suppliers Pvt.Ltd","owner":"Mr. Karan Shahu","phone":9840090802.0,"email":"k.s.square7@gmail.com","budget":2500000.0,"estimate":2434674.27,"contract":1923654.36,"payment":null,"progress":0.1,"startDate":null,"endDate":"2083-01-30","status":null,"remarks":"insurance र Sign board आउन बाकि","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Bailakhan, Chaupata, Range Office Road, Bhageshwor Rural Municipality Ward No. 2, Dadeldhura","nameNp":"वैलाखान, चौपाता, रेन्ज कार्यालय सडक भागेश्वर गा.पा. वडा नं. २, रुपाल, डडेल्धुरा","district":"डडेल्धुरा","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Works/27/082/083/Dadeldhura","contractor":"Kesar Construction","owner":"Mr. Narendra Bahadur Jora","phone":9848803842.0,"email":"narendrajora73@gmail.com","budget":3000000.0,"estimate":2921272.56,"contract":2597010.56,"payment":null,"progress":0.1,"startDate":"2083-02-06","endDate":"2083-03-15","status":null,"remarks":"Insurance And Sign Board Remaining","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Construction of Playground Chaukidanda Kamalbazar & Chaukhutte Playground, Achham","nameNp":"खेलमैदान निर्माण चौकिडाँडा कमलबजार ०८, चौखुट्टे खेलमैदान चौरपाटी गाँउपालिका, सरस्वती मा वि खेलमैदान विनायक न पा ०२, अछाम","district":"अछाम","type":"खेलमैदान (Playground)","contractNo":"UDBO-Doti/NCB/Works/28/082/083/Achham","contractor":"MAHAKAL KAMALBAZAR NIRMAN, Kamalbazar, Achham","owner":"Mr. Tekendra Singh Bista","phone":9764773162.0,"email":"omtekgroup13@gmail.com","budget":3000000.0,"estimate":2920195.28,"contract":2368664.5,"payment":null,"progress":0.1,"startDate":null,"endDate":"2026-06-29","status":null,"remarks":null,"approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Kakadsat Bagar Road & Brahmadanda Lesad Tolyan Road, Achham","nameNp":"ककडसात बागर सडक साफेबगर न,पा ७, ब्रहमडाँडा लेसाड तोल्यान सडक सा न पा ०५, तल्लो धारा देखि तल सान्नीकोट सडक मंगलसेन -५ ,अछाम","district":"अछाम","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Works/29/082/083/Achham","contractor":"MUNA NIRMAN SEWA, Achham","owner":"Mr. Krishna Bohara","phone":9840405358.0,"email":"krishna.bohara2014@gmail.com","budget":2500000.0,"estimate":2433645.65,"contract":2410147.64,"payment":null,"progress":0.1,"startDate":null,"endDate":"2026-06-29","status":null,"remarks":"२०८३ जेठ ६ गते सम्झौता भएको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Trekking route from Tharikada to Dab, Jagannath GP-04, Bajura","nameNp":"थारिकाडाँ देखि डाब सम्म पदमार्ग निर्माण जगन्नाथ गा पा ०४ , ताप्रा दलित टोल बोटो निर्माण बुढीगंगा ०३, बाजुरा","district":"बाजुरा","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Works/30/082/083/Bajura","contractor":"H.R.R Construction And Engineering Consultancy, Bajura","owner":"Mr. Upendra Bahadur Shah","phone":9848754095.0,"email":"ushah.giftbajura@gmail.com","budget":2500000.0,"estimate":2435044.31,"contract":2193914.84,"payment":null,"progress":0.1,"startDate":null,"endDate":"2026-06-29","status":null,"remarks":"२०८३ जेठ ७ गते सम्झौत भएको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Dogdi Goreto Road and Sewerage Drain, Khaptad Chhededah, Bajura","nameNp":"डोगडी गोरेटो बाटो तथा ढल निकास खप्तड छेडेदह ०५, ताडी बस्ति ढल निकास बुढीनन्दा न. पा. ४, बाजुरा","district":"बाजुरा","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Works/31/082/083/Bajura","contractor":"Summit Peak Engineering Consultancy Pvt. Ltd.","owner":"Mr. Dipesh Kuinkel","phone":9851177291.0,"email":"summitpeak11@gmail.com","budget":2500000.0,"estimate":2434572.5,"contract":1947222.84,"payment":null,"progress":0.1,"startDate":null,"endDate":"2026-06-29","status":null,"remarks":"आशयपत्र जारी भएको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Sunakhet Mastamandu Footpath, Bogtan Ru.Mu.-06, Doti","nameNp":"सुनखेत मस्तामाण्डौं पदमार्ग, बोगटान फुड्सिल गा.पा.-०६, डोटी","district":"डोटी","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Works/32/082/083/Doti-Rebid","contractor":"Tender cancel","owner":null,"phone":0,"email":"udbodoti@gmail.com","budget":0,"estimate":2289437.21,"contract":0,"payment":null,"progress":0,"startDate":"2026-05-08","endDate":"2026-05-08","status":null,"remarks":"Tender Cancel","approver":null},{"name":"Pipala Dalit Basthi to Seti Nadi Road, Doti & Silgadhi Khapatd Marg Construction, Doti","nameNp":"पिपल्ला दलित बस्तीदेखि सेती नदीसम्म बाटो निर्माण, डोटी र सिलगढी पुरानो खप्तड मार्ग निर्माण, डोटी","district":"डोटी","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Works/33/082/083/Doti","contractor":"RR Construction and Suppliers, Doti","owner":"Ms. Kaushila Rawat","phone":9848434947.0,"email":"amarrawat2012@gmail.com","budget":2500000.0,"estimate":2432209.39,"contract":2141455.73,"payment":null,"progress":0.1,"startDate":"2026-05-08","endDate":"2026-06-29","status":null,"remarks":"निर्माण सुरु भएको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Mulgada to Budakhola Drain, Doti & Masteshwori Tole Gaira Basti Drain, Doti","nameNp":"मूलगाडादेखि बुढाखोलासम्म ढल निकास, पूर्वीचौकी गा.पा.-०३, डोटी; मष्टाेश्वरी टोल गैरा बस्ती ढल निकास, डोटी","district":"डोटी","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Works/34/082/083/Doti","contractor":"B.S.GROUP, Purbichauki Rural Muncipality-03, Doti","owner":"Mr. Bharat Bahadur Bohara","phone":9858440433.0,"email":"bsgroupdoti@gmail.com","budget":0,"estimate":3649153.81,"contract":3539970.98,"payment":null,"progress":0,"startDate":"2026-05-08","endDate":"2026-05-08","status":null,"remarks":"मिति २०८३ बैशाख ३१ गते सम्झौता भएको","approver":null},{"name":"Tapsi Jhad Pratikshalaya & Jajla Pratikshalaya, Purbichauki GP-07, Doti","nameNp":"तापसी झाड प्रतिक्षालय, जाज्ला प्रतिक्षालय, पूर्वीचौकी गा.पा.-०७, डोटी","district":"डोटी","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Works/35/082/083/Doti-Rebid","contractor":"Mr. Ram Bahadur Karki","owner":"Siddhababa Layanti Engineering Construction","phone":9868105708.0,"email":"udbodoti@gmail.com","budget":0,"estimate":0,"contract":3631494.12,"payment":null,"progress":0.1,"startDate":"2026-05-08","endDate":"2026-05-08","status":null,"remarks":null,"approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Construction of Nawadevi to Punna Footpath & Samuhgad Khailada Bato, Doti","nameNp":"नवदेवी देखि पुन्ना सम्म पदमार्ग, डोटी; आसुढाला गुफा रेलिङ सहित पदमार्ग, डोटी","district":"डोटी","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Works/36/082/083/Doti","contractor":"B.S.GROUP","owner":"Bharat Bohara","phone":9858440433.0,"email":"bsgroupdoti@gmail.com","budget":0,"estimate":3668415.52,"contract":3555973.54,"payment":null,"progress":0.1,"startDate":"2026-05-11","endDate":"2026-05-11","status":null,"remarks":"निर्माण कार्य सुरु भएको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Construction of Bhagwati aabi Ground Cutting & Bhartoli Khelmaidan, Doti","nameNp":"भगवती आ.वि. खेलमैदान ग्राउण्ड कटिङ, भरटोली खेलमैदान, गजरी खेलमैदान, केदारेश्वर खेलमैदान, डोटी","district":"डोटी","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Works/37/082/083/Doti","contractor":"Brahi Nirman Sewa Udyog, Baglekh,Doti","owner":"Mr. Dhan Bahadur Oli","phone":9848642359.0,"email":"udbodoti@gmail.com","budget":0,"estimate":2921692.5,"contract":2784113.08,"payment":null,"progress":0.1,"startDate":"2026-05-11","endDate":"2026-05-11","status":null,"remarks":"निर्माण कार्य सुरु भएको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Otgaun Drain, Naumul Sahakari Building, Tallo Navaghar Road Solar Light, Bajura","nameNp":"ओटगाउँ ढल निकास, नौमुल सहकारी अधुरो भवन निर्माण, तल्लो नवाघर भित्री सडक सोलार बत्ती, बाजुरा","district":"बाजुरा","type":"सडक (Roads)","contractNo":"UDBO-Doti/NCB/Works/38/082/083/Bajura","contractor":"D. R. G Construction And Order Suppliers, Bajura","owner":"Mr. Padam Bahadur Kark","phone":9843591303.0,"email":"karkipadam948@gmail.com","budget":3000000.0,"estimate":3146522.83,"contract":2733591.65,"payment":null,"progress":0.1,"startDate":"2026-05-11","endDate":"2026-05-11","status":null,"remarks":"insurance and signboard आउन बाँकी","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Construction of Aadrash Ward Building-02, Shikar Ward Building-07, Doti","nameNp":"आदर्श वडा भवन निर्माण–०२, शिखर वडा भवन निर्माण–०७, दि.सि.न.पा.–०६, डोटीको वडा भवन निर्माण","district":"डोटी","type":"भवन निर्माण (Building)","contractNo":"UDBO-Doti/NCB/Works/39/082/083/Doti-Rebid","contractor":"Jagannath Construction & Suppliers, Dipayal, Doti","owner":"Satish Kadka","phone":9869443491.0,"email":"chetkhadkadoti@gmail.com","budget":5500000.0,"estimate":5239162.68,"contract":5030157.3,"payment":null,"progress":0.15,"startDate":"2083-02-13","endDate":"2083-03-15","status":null,"remarks":"२०८३ जेठ १३ गते सम्झौता गरिएको","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Construction of Barkattaya to Upperkada Footpath & Dhamithata Malika Footpath, Doti","nameNp":"बर्काट्याया देखि उप्परकाडा सम्म पदमार्ग, धामिथाटा मालिका पदमार्ग, सरस्वती मा वि देखि बासेखोला पदमार्ग, डोटी","district":"डोटी","type":"खेलमैदान (Playground) , सडक (Roads) , भवन निर्माण (Building)","contractNo":"UDBO-Doti/NCB/Works/40/082/083/Doti","contractor":"Siddhababa Layanti Engineering Construction and Consultancy pvt.ltd","owner":"Mr. Ram Bahadur Karki","phone":9868105708.0,"email":"karkirambahadur915@gmail.com","budget":0,"estimate":2561531.04,"contract":2498245.2,"payment":null,"progress":0.1,"startDate":"2026-05-11","endDate":"2026-05-11","status":null,"remarks":"Not Aggrement","approver":"Division Chief Er. Govinda prasad Devkota"},{"name":"Supplying and Installation of Street Solar Light in Budar Bazar, Jorayal","nameNp":"Supplying and Installation of Street Solar Light in Budar Bazar Area 02, Jorayal and Dustbin Container","district":"डोटी","type":"सडक (Roads)","contractNo":"UDBO/Doti/NCB/Works/41/082/083/Doti","contractor":"Pathak Brothers And Suppliers, Dhangadhi, Kailali","owner":"Mr. Krishna Raj Pathak","phone":9848474244.0,"email":"krishnapathak46.kp@gmail.com","budget":2500000.0,"estimate":2362857.0,"contract":1872550.0,"payment":null,"progress":0.1,"startDate":"2026-05-11","endDate":"2026-06-29","status":null,"remarks":"सम्झौता done","approver":"Division Chief Er. Govinda prasad Devkota"}],"sq":[{"name":"Construction of Road at Ayurvedic Hospital, Dipiyal Silgadhi Mun-03, Doti","district":"डोटी","type":"SQ","contractNo":"UDBO/Doti/SQ/Roads/01/082/083/Doti-Rebid","contractor":"K.P. Construction And Consultant Service Pvt. Ltd.","owner":"Mahendra Bista","phone":9869054007,"budget":1500000,"contract":1308121,"payment":null,"progress":0.25,"startDate":"2026-05-14","endDate":"2026-05-14","status":"Completed","remarks":"Construction Works in site continuous"},{"name":"Koireli to Sallegaira via Khaparkot Road Construction Project, Panchadeval Binayak Municipality Ward No. 06, Achham.","district":"अछाम","type":"SQ","contractNo":"UDBO-Doti/SQ/Roads/02/082/083/Achham","contractor":"Jaya Bosakot Construction pvt.ltd.Achham","owner":"Mr. Indra Bahadur Shahi","phone":9868224013,"budget":1500000,"contract":1210166,"payment":1033956.11,"progress":1.0,"startDate":"2026-05-14","endDate":"2026-05-14","status":null,"remarks":"निर्माण कार्य सम्पन्न भएको"},{"name":"Road Upgrading from Bhulu Ward Office to Lamachaur, Turmakhand Rural Municipality Ward No. 02, Achham.","district":"अछाम","type":"SQ","contractNo":"UDBO-Doti/SQ/Roads/03/082/083/Achham-Rebid","contractor":"Jaya Bosakot Construction pvt.ltd.","owner":"Mr. Indra Bahadur Shahi","phone":9868224013,"budget":1500000,"contract":1403195,"payment":1184244.1,"progress":1.0,"startDate":"2082-12-11","endDate":"2083-03-10","status":null,"remarks":"Work Complete"},{"name":"Chama Dhungad Road Construction Project, Navdurga Rural Municipality-5, Dadeldhura","district":"डडेल्धुरा","type":"SQ","contractNo":"UDBO-Doti/SQ/Roads/04/082/083/Dadeldhura-Rebid","contractor":"Minakshi Construction, Dadeldhura","owner":"Mr. Surendra Bahadur Ayer","phone":9858751715,"budget":2000000,"contract":1422504,"payment":null,"progress":0.5,"startDate":"2026-05-14","endDate":"2026-05-14","status":null,"remarks":"Continuous working in sites"},{"name":"Vasauti–Dmautak–Bhetakhan Road Construction, Parshuram-2, Dadeldhura","district":"डडेल्धुरा","type":"SQ","contractNo":"UDBO-Doti/SQ/Roads/05/082/083/Dadeldhura","contractor":"Kailpal Nirman Sewa Dadeldhura","owner":"Mr. Lokendra Bahadur Bohara","phone":9848991384,"budget":1500000,"contract":909676,"payment":null,"progress":0.5,"startDate":"2026-05-14","endDate":"2026-05-14","status":null,"remarks":"Working in site"},{"name":"Construction of access road connecting Khaptad Engineering Campus to the highway, Doti","district":"डोटी","type":"SQ","contractNo":"UDBO-Doti/SQ/Works/06/082/083/Doti","contractor":"N.B nirman sewa, Doti","owner":"Mr. Bhesh Raj Joshi","phone":9858440218,"budget":1500000,"contract":1204495,"payment":null,"progress":0.25,"startDate":"2026-05-24","endDate":"2026-05-24","status":null,"remarks":"निर्माण सुरु गरिएको"},{"name":"Road improvement work for the way to Ghanteshwar Temple Jorayal, Doti","district":"डडेल्धुरा","type":"SQ","contractNo":"UDBO-Doti/SQ/Works/07/082/083/Doti","contractor":"Deepin Builders Private Limited, Mahendranagar, Kanchanpur","owner":"Dipin Karki","phone":9851125110,"budget":1400000,"contract":1042960,"payment":null,"progress":0.5,"startDate":"2026-05-24","endDate":"2026-05-24","status":null,"remarks":null},{"name":"Kolthala-Nirpal-Birwalbhadra Secondary School, Sunkot Dalit Basti Concrete Road, Navdurga Rural Municipality-1, Dadeldhura","district":"डडेल्धुरा","type":"SQ","contractNo":"UDBO-Doti/SQ/Works/08/082/083/Dadeldhura/Re-bid","contractor":"Minakshi Construction, Dadeldhura","owner":"Mr. Surendra Bahadur Ayer","phone":9858751715,"budget":2000000,"contract":1855328,"payment":null,"progress":0,"startDate":"2026-05-25","endDate":"2026-05-25","status":null,"remarks":"सम्झौताका लागि परिपत्र गरिएको"},{"name":"Construction of Kurmulle Bagthali Srithali Patal Road, Parshuram-10, Dadeldhura","district":"डडेल्धुरा","type":"SQ","contractNo":"UDBO-Doti/SQWorks/09/082/083/Dadeldhura/Re-bid","contractor":"Kailpal Nirman Sewa Dadeldhura","owner":"Mr. Lokendra Bahadur Bohara","phone":9848991384,"budget":1500000,"contract":1295075,"payment":null,"progress":0.1,"startDate":"2083-02-08","endDate":"2083-03-15","status":null,"remarks":"सम्झौता गरिएको Original bank garuntee not submitted"},{"name":"Construction of Jyotyashain Bhumiraj Bhagawati Mandri Rural Road, Ganyapdhura, Dadeldhura","district":"डडेल्धुरा","type":"SQ","contractNo":"UDBO-Doti/SQWorks/10/082/083/Dadeldhura/Re-bid","contractor":"Sayon Nirman Sewa, Dadeldhura","owner":"Ms. Maya Kumari Bhatta","phone":9848768084,"budget":2000000,"contract":1902629,"payment":null,"progress":0.1,"startDate":"2083-01-30","endDate":"2083-03-15","status":null,"remarks":"सम्झौता गरिएको"},{"name":"Mural Artification Works, Amargadhi-05, Dadeldhura","district":"डडेल्धुरा","type":"SQ","contractNo":"UDBO-Doti/SQ/Works/11/082/083/Dadeldhura","contractor":"Pusp Construction, Dadeldhura","owner":"Mr. Puspa Khadayat","phone":9858751650,"budget":1500000,"contract":1257373,"payment":null,"progress":0.1,"startDate":"2083-02-11","endDate":"2083-03-15","status":null,"remarks":"इन्सुरेन्स र साइन बोर्ड बनाउन बाँकी"}],"user":[{"name":"Baglake Mini Khapatad Park","district":"डोटी","type":"पार्क निर्माण","contractNo":"USER Committee","committee":"बगलेख मिनि खप्तड पार्क योजना पूर्वीचौका गा.या-02","estimate":3332898.56,"contract":3237221.9,"progress":0.4,"startDate":"2083-01-16","endDate":"2083-03-10","remarks":"सम्झौता भएको"},{"name":"Budar Bus Park, Budar Doti","district":"डडेल्धुरा","type":"बस पार्क निर्माण","contractNo":"उपभोक्ता समितिबाट निर्माण कार्य गराइएको","committee":"बुडर बसपार्क निर्माण उपभोक्ता समिति","estimate":4853862.79,"contract":4724999.18,"progress":0.25,"startDate":"2083-01-17","endDate":"2083-03-10","remarks":"निर्माण कार्य भैरहेको"},{"name":"Badikedar Ward Office, Badikedar Gaunpalika-02, Doti","district":"डोटी","type":"पार्क निर्माण","contractNo":"उपभोक्ता समितिबाट निर्माण कार्य गराइएको","committee":"वडा कार्यालय भवन निर्माण उपभोक्ता समिति बडिकेदार गाँउपालिका-०२ डोटी","estimate":1095683.79,"contract":1065833.79,"progress":0.1,"startDate":"2083-01-25","endDate":"2083-03-10","remarks":"निर्माण कार्य भैरहेको"}]};
+
+const DATA = {
+  ncb: RAW.ncb.filter(p => p.name),
+  sq: RAW.sq.filter(p => p.name),
+  user: RAW.user.filter(p => p.name)
 };
 
-let selectedTab = 'overview';
-let activeFilterDistrict = 'All';
-let currentEditingId = null;
-
-function initApp() {
-  updateCounts();
-  renderOverview();
-  renderProjectLists();
+// ===== HELPERS =====
+function fmt(n) {
+  if (!n || n === 0) return '—';
+  const cr = n / 10000000;
+  if (cr >= 1) return cr.toFixed(2) + ' Cr';
+  const lk = n / 100000;
+  if (lk >= 1) return lk.toFixed(2) + ' L';
+  return n.toLocaleString();
 }
 
-function updateCounts() {
-  document.getElementById('ncb-count').innerText = RAW.ncb.length;
-  document.getElementById('sq-count').innerText = RAW.sq.length;
-  document.getElementById('user-count').innerText = RAW.user.length;
+function pct(n) {
+  if (n === null || n === undefined) return '—';
+  return Math.round(n * 100) + '%';
 }
 
-function switchTab(tabId) {
-  selectedTab = tabId;
-  const tabs = document.querySelectorAll('.nav-tab');
-  tabs.forEach(t => t.classList.remove('active'));
-  
-  // Update UI active states
-  const index = ['overview', 'ncb', 'sq', 'user'].indexOf(tabId);
-  if(index !== -1) tabs[index].classList.add('active');
-
-  document.getElementById('tab-overview').style.display = tabId === 'overview' ? 'block' : 'none';
-  document.getElementById('tab-ncb').style.display = tabId === 'ncb' ? 'block' : 'none';
-  document.getElementById('tab-sq').style.display = tabId === 'sq' ? 'block' : 'none';
-  document.getElementById('tab-user').style.display = tabId === 'user' ? 'block' : 'none';
+function statusBadge(s) {
+  if (!s) return '<span class="status-badge badge-null">—</span>';
+  const lower = s.toLowerCase();
+  if (lower.includes('complete')) return `<span class="status-badge badge-complete">${s}</span>`;
+  if (lower.includes('running')) return `<span class="status-badge badge-running">${s}</span>`;
+  return `<span class="status-badge badge-null">${s}</span>`;
 }
 
-// ===== OVERVIEW COMPONENT RENDERING =====
-function renderOverview() {
-  const totalCount = RAW.ncb.length + RAW.sq.length + RAW.user.length;
-  const completedCount = RAW.ncb.filter(p => p.status === 'Complete').length;
-  const runningCount = totalCount - completedCount;
-  
-  let totalBudget = 0;
-  let totalContract = 0;
-  let totalPayment = 0;
+function progressColor(p) {
+  if (p >= 1) return '#2d6a4f';
+  if (p >= 0.5) return '#2355a0';
+  if (p >= 0.25) return '#d4a017';
+  return '#e85d04';
+}
 
-  RAW.ncb.forEach(p => {
-    totalBudget += p.budget || 0;
-    totalContract += p.contract || 0;
-    totalPayment += p.payment || 0;
+function statusColor(s) {
+  if (!s) return '#94a3b8';
+  const l = s.toLowerCase();
+  if (l.includes('complete')) return '#2d6a4f';
+  if (l.includes('running')) return '#2355a0';
+  return '#94a3b8';
+}
+
+// ===== TABS =====
+let currentTab = 'overview';
+let ncbFilter = 'all';
+let sqFilter = 'all';
+let searchQ = '';
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.nav-tab').forEach((el, i) => {
+    el.classList.toggle('active', ['overview','ncb','sq','user'][i] === tab);
   });
-
-  document.getElementById('ov-total').innerText = totalCount;
-  document.getElementById('ov-complete').innerText = completedCount;
-  document.getElementById('ov-running').innerText = runningCount;
-  document.getElementById('ov-budget').innerText = (totalBudget / 10000000).toFixed(2);
-
-  // Financial Bars
-  document.getElementById('ncb-budget-val').innerText = 'NPR ' + totalBudget.toLocaleString();
-  document.getElementById('ncb-contract-val').innerText = 'NPR ' + totalContract.toLocaleString();
-  document.getElementById('ncb-payment-val').innerText = 'NPR ' + totalPayment.toLocaleString();
-
-  document.getElementById('ncb-contract-bar').style.width = ((totalContract / totalBudget) * 100) + '%';
-  document.getElementById('ncb-payment-bar').style.width = ((totalPayment / totalBudget) * 100) + '%';
-
-  // Dynamic charts
-  buildDistrictDistribution();
-  buildTypeBreakdownChart();
-}
-
-function buildDistrictDistribution() {
-  const container = document.getElementById('district-bars');
-  container.innerHTML = '';
-  
-  const counts = {};
-  RAW.ncb.forEach(p => counts[p.district] = (counts[p.district] || 0) + 1);
-  
-  const max = Math.max(...Object.values(counts));
-  
-  Object.keys(counts).forEach(dist => {
-    const count = counts[dist];
-    const pct = (count / max) * 100;
-    
-    container.innerHTML += `
-      <div class="district-bar-row">
-        <div class="district-bar-meta">
-          <span class="district-bar-label">${dist}</span>
-          <span class="district-bar-count">${count} Project(s)</span>
-        </div>
-        <div class="district-bar-bg">
-          <div class="district-bar-fill" style="width: ${pct}%"></div>
-        </div>
-      </div>
-    `;
+  ['overview','ncb','sq','user'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
   });
-}
-
-function buildTypeBreakdownChart() {
-  const svg = document.getElementById('donut-svg');
-  const legend = document.getElementById('donut-legend');
-  svg.innerHTML = '';
-  legend.innerHTML = '';
-
-  const types = {};
-  RAW.ncb.forEach(p => {
-    const cleanType = p.type.split(' (')[0];
-    types[cleanType] = (types[cleanType] || 0) + 1;
-  });
-
-  const colors = ['#1a3a5c', '#e85d04', '#2d6a4f', '#d4a017', '#c1121f'];
-  const total = RAW.ncb.length;
-  let accumulatedAngle = 0;
-  let colorIndex = 0;
-
-  Object.keys(types).forEach(type => {
-    const count = types[type];
-    const percentage = (count / total) * 100;
-    const sliceAngle = (count / total) * 360;
-
-    // SVG arc drawing math
-    const r = 40;
-    const cx = 55;
-    const cy = 55;
-
-    const x1 = cx + r * Math.cos((accumulatedAngle - 90) * Math.PI / 180);
-    const y1 = cy + r * Math.sin((accumulatedAngle - 90) * Math.PI / 180);
-    
-    accumulatedAngle += sliceAngle;
-    
-    const x2 = cx + r * Math.cos((accumulatedAngle - 90) * Math.PI / 180);
-    const y2 = cy + r * Math.sin((accumulatedAngle - 90) * Math.PI / 180);
-    
-    const largeArc = sliceAngle > 180 ? 1 : 0;
-    const pathData = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
-    
-    const color = colors[colorIndex % colors.length];
-    
-    svg.innerHTML += `<path d="${pathData}" fill="${color}" stroke="#fff" stroke-width="1.5"></path>`;
-    legend.innerHTML += `
-      <div class="legend-item">
-        <div class="legend-dot" style="background:${color}"></div>
-        <div class="legend-label">${type}</div>
-        <div class="legend-value">${count}</div>
-      </div>
-    `;
-    colorIndex++;
-  });
-
-  // Inner knockout hole for donut visual look
-  svg.innerHTML += `<circle cx="55" cy="55" r="22" fill="#ffffff"></circle>`;
-}
-
-// ===== PROJECT TAB RECORDS LIST RENDERING =====
-function renderProjectLists() {
-  buildFilterChips('ncb');
-  buildFilterChips('sq');
-  filterProjects();
-}
-
-function buildFilterChips(type) {
-  const row = document.getElementById(`${type}-filters`);
-  if (!row) return;
-
-  const districts = ['All', ...new Set(RAW[type].map(p => p.district))];
-  row.innerHTML = districts.map(d => `
-    <button class="filter-chip ${d === activeFilterDistrict ? 'active' : ''}" onclick="setDistrictFilter('${type}', '${d}')">${d}</button>
-  `).join('');
-}
-
-function setDistrictFilter(tab, district) {
-  activeFilterDistrict = district;
-  buildFilterChips(tab);
-  filterProjects();
+  if (tab === 'ncb') renderNCB();
+  if (tab === 'sq') renderSQ();
+  if (tab === 'user') renderUser();
 }
 
 function filterProjects() {
-  const q = document.getElementById('search-input').value.toLowerCase().trim();
-  
-  ['ncb', 'sq', 'user'].forEach(type => {
-    const list = document.getElementById(`${type}-list`);
-    if (!list) return;
-
-    let filtered = RAW[type];
-
-    if (type !== 'user' && activeFilterDistrict !== 'All') {
-      filtered = filtered.filter(p => p.district === activeFilterDistrict);
-    }
-
-    if (q) {
-      filtered = filtered.filter(p => 
-        p.name.toLowerCase().includes(q) || 
-        p.contractor.toLowerCase().includes(q) || 
-        (p.contractNo && p.contractNo.toLowerCase().includes(q))
-      );
-    }
-
-    if(filtered.length === 0) {
-      list.innerHTML = `<div class="no-data"><div class="icon">🔍</div>No matching project modules found.</div>`;
-      return;
-    }
-
-    list.innerHTML = filtered.map(p => {
-      const isComplete = p.status === 'Complete';
-      const statusClass = isComplete ? 'badge-complete' : 'badge-running';
-      const accentColor = isComplete ? 'var(--success)' : 'var(--primary-light)';
-      const progressPercent = Math.round((p.progress || 0) * 100);
-
-      return `
-        <div class="project-card" style="--status-color: ${accentColor}" onclick="openProjectModal('${type}', ${p.id})">
-          <div class="project-card-top">
-            <div class="project-name">${p.name}</div>
-            <span class="status-badge ${statusClass}">${p.status || 'Running'}</span>
-          </div>
-          <div class="project-meta">
-            <div class="meta-item">📍 <strong>${p.district}</strong></div>
-            <div class="meta-item">📋 ID: <strong>${p.contractNo ? p.contractNo.split('/').slice(-3, -1).join('-') : p.id}</strong></div>
-            <div class="meta-item">💰 NPR <strong>${(p.budget/100000).toFixed(1)}L</strong></div>
-          </div>
-          <div class="progress-wrap">
-            <div class="progress-label">
-              <span>Physical Status Progress</span>
-              <strong>${progressPercent}%</strong>
-            </div>
-            <div class="progress-bg">
-              <div class="progress-fill" style="width: ${progressPercent}%; background: ${accentColor}"></div>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  });
+  searchQ = document.getElementById('search-input').value.toLowerCase();
+  if (currentTab === 'ncb') renderNCB();
+  if (currentTab === 'sq') renderSQ();
+  if (currentTab === 'user') renderUser();
 }
 
-// ===== DETAILED OVERLAY SHEET & EDIT OPERATIONS =====
-let activeTargetObject = null;
+// ===== INIT =====
+function initApp() {
+  renderOverview();
 
-function openProjectModal(type, id) {
-  const item = RAW[type].find(p => p.id === id);
-  if(!item) return;
+  // Set counts
+  document.getElementById('ncb-count').textContent = DATA.ncb.length;
+  document.getElementById('sq-count').textContent = DATA.sq.length;
 
-  activeTargetObject = { type, id, data: item };
-  currentEditingId = id;
+  renderNCBFilters();
+  renderSQFilters();
+}
 
-  document.getElementById('modal-title').innerText = item.name;
-  
-  // Render analytical clean layout values
-  const body = document.getElementById('modal-body');
-  body.innerHTML = `
-    <div class="detail-row"><div class="detail-key">Nepali Description</div><div class="detail-val" style="font-family: 'Noto Sans Devanagari'">${item.nameNp || '-'}</div></div>
-    <div class="detail-row"><div class="detail-key">District Assignment</div><div class="detail-val">${item.district}</div></div>
-    <div class="detail-row"><div class="detail-key">Structural Type</div><div class="detail-val">${item.type}</div></div>
-    <div class="detail-row"><div class="detail-key">Contract Identity #</div><div class="detail-val"><code>${item.contractNo || '-'}</code></div></div>
-    <div class="detail-row"><div class="detail-key">Contractor Lead</div><div class="detail-val">${item.contractor || '-'}</div></div>
-    <div class="detail-row"><div class="detail-key">Proprietor Contact</div><div class="detail-val">${item.owner || '-'} (${item.phone || '-'})</div></div>
-    <div class="detail-row"><div class="detail-key">Financial Allotment</div><div class="detail-val">NPR ${item.budget ? item.budget.toLocaleString() : '0'}</div></div>
-    <div class="detail-row"><div class="detail-key">Office Estimate</div><div class="detail-val">NPR ${item.estimate ? item.estimate.toLocaleString() : '0'}</div></div>
-    <div class="detail-row"><div class="detail-key">Agreed Bid Amount</div><div class="detail-val">NPR ${item.contract ? item.contract.toLocaleString() : '0'}</div></div>
-    <div class="detail-row"><div class="detail-key">Disbursed Balance</div><div class="detail-val">NPR ${item.payment ? item.payment.toLocaleString() : '0'}</div></div>
-    <div class="detail-row"><div class="detail-key">Current Status</div><div class="detail-val"><strong>${item.status || 'Running'}</strong> (${Math.round((item.progress||0)*100)}%)</div></div>
-    <div class="detail-row"><div class="detail-key">Timeline</div><div class="detail-val">📅 ${item.startDate} to ${item.endDate}</div></div>
-    <div class="detail-row"><div class="detail-key">Field Inspector Audit</div><div class="detail-val">${item.remarks || '-'}</div></div>
-    <div class="detail-row"><div class="detail-key">Authority Executive</div><div class="detail-val">${item.approver || 'Pending Assignment'}</div></div>
-  `;
+// ===== OVERVIEW =====
+function renderOverview() {
+  const allProjects = [...DATA.ncb, ...DATA.sq, ...DATA.user];
+  const total = allProjects.length;
+  const complete = allProjects.filter(p => {
+    const s = (p.status||'').toLowerCase();
+    return s.includes('complete') || (p.progress >= 1);
+  }).length;
+  const running = DATA.ncb.filter(p => (p.status||'').toLowerCase().includes('running')).length;
 
-  cancelEdit(); // Reset frame to default viewer presentation state
+  const totalBudget = DATA.ncb.reduce((s,p) => s + (p.budget||0), 0) +
+                      DATA.sq.reduce((s,p) => s + (p.budget||0), 0);
+
+  document.getElementById('ov-total').textContent = total;
+  document.getElementById('ov-complete').textContent = complete;
+  document.getElementById('ov-running').textContent = running;
+  document.getElementById('ov-budget').textContent = (totalBudget/10000000).toFixed(1);
+
+  renderDonut();
+  renderBudgetBars();
+  renderDistrictBars();
+}
+
+function renderDonut() {
+  const types = {};
+  DATA.ncb.forEach(p => {
+    const t = p.type || 'Other';
+    const key = t.includes('Road') || t.includes('सडक') ? 'Roads' :
+                t.includes('Building') || t.includes('भवन') ? 'Buildings' :
+                t.includes('Playground') || t.includes('खेल') ? 'Playgrounds' :
+                t.includes('Buspark') || t.includes('बसपार्क') ? 'Bus Parks' : 'Other';
+    types[key] = (types[key]||0) + 1;
+  });
+
+  const colors = ['#2355a0','#e85d04','#2d6a4f','#d4a017','#c1121f','#7b2d8b'];
+  const keys = Object.keys(types);
+  const vals = keys.map(k => types[k]);
+  const total = vals.reduce((a,b) => a+b, 0);
+
+  let svgPath = '';
+  let startAngle = -Math.PI/2;
+  const cx = 55, cy = 55, r = 40, inner = 22;
+
+  keys.forEach((k, i) => {
+    const angle = (vals[i]/total) * 2 * Math.PI;
+    const endAngle = startAngle + angle;
+    const x1 = cx + r * Math.cos(startAngle);
+    const y1 = cy + r * Math.sin(startAngle);
+    const x2 = cx + r * Math.cos(endAngle);
+    const y2 = cy + r * Math.sin(endAngle);
+    const ix1 = cx + inner * Math.cos(startAngle);
+    const iy1 = cy + inner * Math.sin(startAngle);
+    const ix2 = cx + inner * Math.cos(endAngle);
+    const iy2 = cy + inner * Math.sin(endAngle);
+    const large = angle > Math.PI ? 1 : 0;
+    svgPath += `<path d="M${ix1} ${iy1} L${x1} ${y1} A${r} ${r} 0 ${large} 1 ${x2} ${y2} L${ix2} ${iy2} A${inner} ${inner} 0 ${large} 0 ${ix1} ${iy1} Z" fill="${colors[i]}"/>`;
+    startAngle = endAngle;
+  });
+
+  document.getElementById('donut-svg').innerHTML = svgPath + `<text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="14" font-weight="bold" fill="#1a2332">${total}</text>`;
+
+  const legend = keys.map((k,i) => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${colors[i]}"></div>
+      <span class="legend-label">${k}</span>
+      <span class="legend-value">${vals[i]}</span>
+    </div>
+  `).join('');
+  document.getElementById('donut-legend').innerHTML = legend;
+}
+
+function renderBudgetBars() {
+  const budget = DATA.ncb.reduce((s,p) => s + (p.budget||0), 0);
+  const contract = DATA.ncb.reduce((s,p) => s + (p.contract||0), 0);
+  const payment = DATA.ncb.reduce((s,p) => s + (p.payment||0), 0);
+
+  document.getElementById('ncb-budget-val').textContent = fmt(budget);
+  document.getElementById('ncb-contract-val').textContent = fmt(contract);
+  document.getElementById('ncb-payment-val').textContent = fmt(payment);
+
+  setTimeout(() => {
+    document.getElementById('ncb-contract-bar').style.width = (contract/budget*100).toFixed(1) + '%';
+    document.getElementById('ncb-payment-bar').style.width = (payment/budget*100).toFixed(1) + '%';
+  }, 100);
+}
+
+function renderDistrictBars() {
+  const dist = {};
+  DATA.ncb.forEach(p => {
+    const d = p.district||'Unknown';
+    dist[d] = (dist[d]||0) + 1;
+  });
+  const max = Math.max(...Object.values(dist));
+  const colors = ['#2355a0','#e85d04','#2d6a4f','#d4a017','#c1121f'];
+  const html = Object.entries(dist).sort((a,b) => b[1]-a[1]).map(([d,n],i) => `
+    <div class="budget-bar-wrap">
+      <div class="budget-bar-label">
+        <span>${d}</span>
+        <span>${n} projects</span>
+      </div>
+      <div class="budget-bar-bg">
+        <div class="budget-bar-fill" style="width:${(n/max*100).toFixed(0)}%; background:${colors[i%colors.length]};"></div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('district-bars').innerHTML = html;
+}
+
+// ===== NCB LIST =====
+function renderNCBFilters() {
+  const districts = ['all', ...new Set(DATA.ncb.map(p => p.district).filter(Boolean))];
+  const html = districts.map(d => `
+    <button class="filter-chip ${d==='all'&&ncbFilter==='all'?'active':d===ncbFilter?'active':''}" onclick="setNCBFilter('${d}')">
+      ${d === 'all' ? 'All Districts' : d}
+    </button>
+  `).join('');
+  document.getElementById('ncb-filters').innerHTML = html;
+}
+
+function setNCBFilter(d) {
+  ncbFilter = d;
+  renderNCBFilters();
+  renderNCB();
+}
+
+function renderNCB() {
+  let projects = DATA.ncb;
+  if (ncbFilter !== 'all') projects = projects.filter(p => p.district === ncbFilter);
+  if (searchQ) projects = projects.filter(p =>
+    (p.name||'').toLowerCase().includes(searchQ) ||
+    (p.contractor||'').toLowerCase().includes(searchQ) ||
+    (p.district||'').toLowerCase().includes(searchQ)
+  );
+  renderProjectList('ncb-list', projects, 'ncb');
+}
+
+function renderSQFilters() {
+  const districts = ['all', ...new Set(DATA.sq.map(p => p.district).filter(Boolean))];
+  const html = districts.map(d => `
+    <button class="filter-chip ${d==='all'&&sqFilter==='all'?'active':d===sqFilter?'active':''}" onclick="setSQFilter('${d}')">
+      ${d === 'all' ? 'All Districts' : d}
+    </button>
+  `).join('');
+  document.getElementById('sq-filters').innerHTML = html;
+}
+
+function setSQFilter(d) {
+  sqFilter = d;
+  renderSQFilters();
+  renderSQ();
+}
+
+function renderSQ() {
+  let projects = DATA.sq;
+  if (sqFilter !== 'all') projects = projects.filter(p => p.district === sqFilter);
+  if (searchQ) projects = projects.filter(p =>
+    (p.name||'').toLowerCase().includes(searchQ) ||
+    (p.contractor||'').toLowerCase().includes(searchQ)
+  );
+  renderProjectList('sq-list', projects, 'sq');
+}
+
+function renderUser() {
+  let projects = DATA.user;
+  if (searchQ) projects = projects.filter(p =>
+    (p.name||'').toLowerCase().includes(searchQ)
+  );
+  renderProjectList('user-list', projects, 'user');
+}
+
+function renderProjectList(containerId, projects, type) {
+  if (!projects.length) {
+    document.getElementById(containerId).innerHTML = `
+      <div class="no-data">
+        <div class="icon">🔍</div>
+        No projects found
+      </div>`;
+    return;
+  }
+  const html = projects.map((p, idx) => {
+    const prog = p.progress !== null ? p.progress : 0;
+    const sc = statusColor(p.status || (prog >= 1 ? 'Complete' : null));
+    return `
+      <div class="project-card" style="--status-color:${sc}" onclick="openModal('${type}',${idx})">
+        <div class="project-card-top">
+          <div class="project-name">${p.name || '—'}</div>
+          ${statusBadge(p.status || (prog >= 1 ? 'Complete' : null))}
+        </div>
+        <div class="project-meta">
+          <div class="meta-item">📍 <strong>${p.district||'—'}</strong></div>
+          <div class="meta-item">🏗️ <strong>${(p.type||'—').split('(')[0].trim()}</strong></div>
+          ${p.contract ? `<div class="meta-item">💰 <strong>${fmt(p.contract)}</strong></div>` : ''}
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span>Physical Progress</span>
+            <strong>${pct(prog)}</strong>
+          </div>
+          <div class="progress-bg">
+            <div class="progress-fill" style="width:${Math.round(prog*100)}%; background:${progressColor(prog)};"></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById(containerId).innerHTML = html;
+}
+
+// ===== MODAL =====
+let _currentProject = null;
+let _currentType = null;
+let _currentOrigIdx = null;
+
+function openModal(type, idx) {
+  let list = DATA[type];
+  if (type === 'ncb') {
+    let filtered = DATA.ncb;
+    if (ncbFilter !== 'all') filtered = filtered.filter(p => p.district === ncbFilter);
+    if (searchQ) filtered = filtered.filter(p =>
+      (p.name||'').toLowerCase().includes(searchQ) ||
+      (p.contractor||'').toLowerCase().includes(searchQ) ||
+      (p.district||'').toLowerCase().includes(searchQ)
+    );
+    list = filtered;
+  } else if (type === 'sq') {
+    let filtered = DATA.sq;
+    if (sqFilter !== 'all') filtered = filtered.filter(p => p.district === sqFilter);
+    if (searchQ) filtered = filtered.filter(p => (p.name||'').toLowerCase().includes(searchQ) || (p.contractor||'').toLowerCase().includes(searchQ));
+    list = filtered;
+  }
+  const p = list[idx];
+  if (!p) return;
+
+  // Find original index in full DATA array
+  _currentType = type;
+  _currentProject = p;
+  _currentOrigIdx = DATA[type].indexOf(p);
+
+  renderViewMode(p);
+  cancelEdit(); // ensure view mode
+  document.getElementById('save-success').style.display = 'none';
   document.getElementById('modal-overlay').classList.add('open');
 }
 
+function renderViewMode(p) {
+  document.getElementById('modal-title').textContent = p.name || '—';
+
+  const rows = [
+    ['Nepali Name', p.nameNp],
+    ['District', p.district],
+    ['Type', p.type],
+    ['Contract No.', p.contractNo],
+    ['Contractor', p.contractor],
+    ['Owner/Proprietor', p.owner],
+    ['Phone', p.phone ? String(Math.round(p.phone)) : null],
+    ['Email', p.email],
+    ['Budget', p.budget ? fmt(p.budget) : null],
+    ['Cost Estimate', p.estimate ? fmt(p.estimate) : null],
+    ['Contract Amount', p.contract ? fmt(p.contract) : null],
+    ['Payment Made', p.payment ? fmt(p.payment) : '—'],
+    ['Progress', pct(p.progress)],
+    ['Start Date', p.startDate],
+    ['End Date', p.endDate],
+    ['Status', p.status || '—'],
+    ['Approver', p.approver],
+    ['Committee', p.committee],
+    ['Remarks', p.remarks],
+  ].filter(([k,v]) => v !== null && v !== undefined && v !== '' || k === 'Status' || k === 'Payment Made');
+
+  const bodyHtml = rows.map(([k,v]) => `
+    <div class="detail-row">
+      <div class="detail-key">${k}</div>
+      <div class="detail-val">${v||'—'}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('modal-body').innerHTML = bodyHtml;
+}
+
 function enterEditMode() {
-  if (currentUser === 'viewer') return;
-  
-  const form = document.getElementById('edit-form');
-  const d = activeTargetObject.data;
+  const p = _currentProject;
+  document.getElementById('view-actions').style.display = 'none';
+  document.getElementById('edit-actions').style.display = 'flex';
+  document.getElementById('modal-body').classList.add('hidden');
+  document.getElementById('edit-form').classList.add('active');
 
-  form.innerHTML = `
-    <div class="edit-section-title">Core Description Parameters</div>
-    <div class="edit-group">
-      <label>English Meta Name</label>
-      <input type="text" id="edit-name" value="${d.name.replace(/"/g, '&quot;')}">
-    </div>
-    <div class="edit-group">
-      <label>Devanagari Localized Name</label>
-      <input type="text" id="edit-nameNp" value="${(d.nameNp || '').replace(/"/g, '&quot;')}">
-    </div>
-    
-    <div class="edit-section-title">Logistical Distribution Tracking</div>
-    <div class="edit-group">
-      <label>Target District Zone</label>
-      <input type="text" id="edit-district" value="${d.district}">
-    </div>
-    <div class="edit-group">
-      <label>Contract Assignment Identity Key</label>
-      <input type="text" id="edit-contractNo" value="${d.contractNo || ''}">
-    </div>
-    <div class="edit-group">
-      <label>Assigned Engineering Firm</label>
-      <input type="text" id="edit-contractor" value="${d.contractor || ''}">
-    </div>
+  const isAdmin = true; // in real app, check logged-in user role
 
-    <div class="edit-section-title">Allotments & Financial Records</div>
+  document.getElementById('edit-form').innerHTML = `
+    <div class="edit-section-title">📋 Basic Information</div>
     <div class="edit-group">
-      <label>Office Estimated Value (NPR)</label>
-      <input type="number" id="edit-estimate" value="${d.estimate || 0}">
+      <label>Project Name (English)</label>
+      <textarea id="ef-name" rows="2">${p.name||''}</textarea>
     </div>
     <div class="edit-group">
-      <label>Contract Aggreed Value (NPR)</label>
-      <input type="number" id="edit-contract" value="${d.contract || 0}">
+      <label>Project Name (Nepali)</label>
+      <textarea id="ef-nameNp" rows="2">${p.nameNp||''}</textarea>
     </div>
     <div class="edit-group">
-      <label>Disbursed Milestone Payment (NPR)</label>
-      <input type="number" id="edit-payment" value="${d.payment || 0}">
-    </div>
-
-    <div class="edit-section-title">Field Progress Conditions</div>
-    <div class="edit-group">
-      <label>Physical Execution Metrics (0.0 to 1.0 representation)</label>
-      <input type="number" step="0.01" min="0" max="1" id="edit-progress" value="${d.progress || 0}">
-    </div>
-    <div class="edit-group">
-      <label>Current Administrative Milestone State</label>
-      <select id="edit-status">
-        <option value="Running Project" ${d.status === 'Running Project' ? 'selected' : ''}>Running Project</option>
-        <option value="Complete" ${d.status === 'Complete' ? 'selected' : ''}>Complete</option>
+      <label>District (जिल्ला)</label>
+      <select id="ef-district">
+        ${['डोटी','अछाम','बाजुरा','डडेल्धुरा'].map(d => `<option ${p.district===d?'selected':''}>${d}</option>`).join('')}
       </select>
     </div>
     <div class="edit-group">
-      <label>Engineering Desk Evaluation Remarks</label>
-      <textarea id="edit-remarks" rows="2">${d.remarks || ''}</textarea>
+      <label>Project Type</label>
+      <input id="ef-type" value="${p.type||''}">
+    </div>
+    <div class="edit-group">
+      <label>Contract No. (ठेक्का नं.)</label>
+      <input id="ef-contractNo" value="${p.contractNo||''}">
+    </div>
+
+    <div class="edit-section-title">🏗️ Contractor Details</div>
+    <div class="edit-group">
+      <label>Contractor Name</label>
+      <input id="ef-contractor" value="${p.contractor||''}">
+    </div>
+    <div class="edit-group">
+      <label>Owner / Proprietor</label>
+      <input id="ef-owner" value="${p.owner||''}">
+    </div>
+    <div class="edit-group">
+      <label>Phone</label>
+      <input id="ef-phone" type="tel" value="${p.phone ? Math.round(p.phone) : ''}">
+    </div>
+    <div class="edit-group">
+      <label>Email</label>
+      <input id="ef-email" type="email" value="${p.email||''}">
+    </div>
+
+    <div class="edit-section-title">💰 Financial Details</div>
+    <div class="edit-group">
+      <label>Allocated Budget (NPR)</label>
+      <input id="ef-budget" type="number" value="${p.budget||0}">
+    </div>
+    <div class="edit-group">
+      <label>Cost Estimate (NPR)</label>
+      <input id="ef-estimate" type="number" value="${p.estimate||0}">
+    </div>
+    <div class="edit-group">
+      <label>Contract Amount (NPR)</label>
+      <input id="ef-contract" type="number" value="${p.contract||0}">
+    </div>
+    <div class="edit-group">
+      <label>Payment Made (NPR)</label>
+      <input id="ef-payment" type="number" value="${p.payment||0}">
+    </div>
+
+    <div class="edit-section-title">📅 Progress & Status</div>
+    <div class="edit-group">
+      <label>Physical Progress (0 to 1, e.g. 0.5 = 50%)</label>
+      <input id="ef-progress" type="number" min="0" max="1" step="0.01" value="${p.progress||0}">
+    </div>
+    <div class="edit-group">
+      <label>Start Date</label>
+      <input id="ef-startDate" value="${p.startDate||''}">
+    </div>
+    <div class="edit-group">
+      <label>End Date</label>
+      <input id="ef-endDate" value="${p.endDate||''}">
+    </div>
+    <div class="edit-group">
+      <label>Status</label>
+      <select id="ef-status">
+        <option value="">— Select —</option>
+        ${['Running Project','Complete','Completed'].map(s => `<option ${p.status===s?'selected':''}>${s}</option>`).join('')}
+      </select>
+    </div>
+    <div class="edit-group">
+      <label>Approver</label>
+      <input id="ef-approver" value="${p.approver||''}">
+    </div>
+    <div class="edit-group">
+      <label>Remarks / Notes</label>
+      <textarea id="ef-remarks" rows="3">${p.remarks||''}</textarea>
     </div>
   `;
-
-  document.getElementById('modal-body').classList.add('hidden');
-  document.getElementById('view-actions').style.display = 'none';
-  
-  form.classList.add('active');
-  document.getElementById('edit-actions').style.display = 'flex';
-}
-
-function cancelEdit() {
-  document.getElementById('edit-form').classList.remove('active');
-  document.getElementById('edit-actions').style.display = 'none';
-  
-  document.getElementById('modal-body').classList.remove('hidden');
-  if(currentUser !== 'viewer') {
-    document.getElementById('view-actions').style.display = 'flex';
-  }
 }
 
 function saveEdits() {
-  const d = activeTargetObject.data;
+  const p = _currentProject;
 
-  // Map updated structural records
-  d.name = document.getElementById('edit-name').value.trim();
-  d.nameNp = document.getElementById('edit-nameNp').value.trim();
-  d.district = document.getElementById('edit-district').value.trim();
-  d.contractNo = document.getElementById('edit-contractNo').value.trim();
-  d.contractor = document.getElementById('edit-contractor').value.trim();
-  d.estimate = parseFloat(document.getElementById('edit-estimate').value) || 0;
-  d.contract = parseFloat(document.getElementById('edit-contract').value) || 0;
-  d.payment = parseFloat(document.getElementById('edit-payment').value) || 0;
-  d.progress = parseFloat(document.getElementById('edit-progress').value) || 0;
-  d.status = document.getElementById('edit-status').value;
-  d.remarks = document.getElementById('edit-remarks').value.trim();
+  // Read all edited values
+  p.name = document.getElementById('ef-name').value.trim();
+  p.nameNp = document.getElementById('ef-nameNp').value.trim();
+  p.district = document.getElementById('ef-district').value;
+  p.type = document.getElementById('ef-type').value.trim();
+  p.contractNo = document.getElementById('ef-contractNo').value.trim();
+  p.contractor = document.getElementById('ef-contractor').value.trim();
+  p.owner = document.getElementById('ef-owner').value.trim();
+  p.phone = parseFloat(document.getElementById('ef-phone').value) || null;
+  p.email = document.getElementById('ef-email').value.trim();
+  p.budget = parseFloat(document.getElementById('ef-budget').value) || 0;
+  p.estimate = parseFloat(document.getElementById('ef-estimate').value) || 0;
+  p.contract = parseFloat(document.getElementById('ef-contract').value) || 0;
+  p.payment = parseFloat(document.getElementById('ef-payment').value) || null;
+  p.progress = parseFloat(document.getElementById('ef-progress').value) || 0;
+  p.startDate = document.getElementById('ef-startDate').value.trim();
+  p.endDate = document.getElementById('ef-endDate').value.trim();
+  p.status = document.getElementById('ef-status').value || null;
+  p.approver = document.getElementById('ef-approver').value.trim();
+  p.remarks = document.getElementById('ef-remarks').value.trim();
 
-  // Commit and flash message framework update notifications
-  initApp(); 
-  
-  const successLabel = document.getElementById('save-success');
-  successLabel.style.display = 'block';
-  setTimeout(() => { successLabel.style.display = 'none'; }, 2500);
+  // Update in DATA array
+  if (_currentOrigIdx >= 0) DATA[_currentType][_currentOrigIdx] = p;
+  _currentProject = p;
 
-  openProjectModal(activeTargetObject.type, activeTargetObject.id);
+  // Show success
+  document.getElementById('save-success').style.display = 'block';
+  setTimeout(() => document.getElementById('save-success').style.display = 'none', 2500);
+
+  // Return to view mode
+  cancelEdit();
+  renderViewMode(p);
+  document.getElementById('modal-title').textContent = p.name || '—';
+
+  // Refresh the list
+  if (_currentType === 'ncb') renderNCB();
+  else if (_currentType === 'sq') renderSQ();
+  else if (_currentType === 'user') renderUser();
+  renderOverview();
 }
 
-function closeModal(e) {
-  if(e.target.id === 'modal-overlay') closeModalDirect();
+function cancelEdit() {
+  document.getElementById('view-actions').style.display = 'flex';
+  document.getElementById('edit-actions').style.display = 'none';
+  document.getElementById('modal-body').classList.remove('hidden');
+  document.getElementById('edit-form').classList.remove('active');
+  document.getElementById('edit-form').innerHTML = '';
 }
 
-function closeModalDirect() {
-  document.getElementById('modal-overlay').classList.remove('open');
-}
-
-// ===== SYSTEM UTILITY - PRINT GENERATOR =====
 function printProject() {
-  const d = activeTargetObject.data;
-  const printArea = document.getElementById('print-area');
-  
-  printArea.innerHTML = `
-    <div style="font-family: Arial, sans-serif; padding:30px; border:3px double #1a3a5c;">
-      <h2 style="color:#1a3a5c; margin-bottom:4px; text-transform:uppercase;">Urban Development & Building Office</h2>
-      <h4 style="color:#6b7a8d; margin-bottom:24px; border-bottom:2px solid #1a3a5c; padding-bottom:8px;">Project Execution Audit Receipt</h4>
-      
-      <table style="width:100%; border-collapse:collapse; font-size:14px;">
-        <tr><td style="padding:8px; font-weight:bold; width:180px;">Project Title:</td><td style="padding:8px;">${d.name}</td></tr>
-        <tr><td style="padding:8px; font-weight:bold;">Local Title:</td><td style="padding:8px;">${d.nameNp || '-'}</td></tr>
-        <tr><td style="padding:8px; font-weight:bold;">Contract Key ID:</td><td style="padding:8px;"><code>${d.contractNo || '-'}</code></td></tr>
-        <tr><td style="padding:8px; font-weight:bold;">District Territory:</td><td style="padding:8px;">${d.district}</td></tr>
-        <tr><td style="padding:8px; font-weight:bold;">Engineering Firm:</td><td style="padding:8px;">${d.contractor || '-'}</td></tr>
-        <tr><td style="padding:8px; font-weight:bold;">Assigned Allotment:</td><td style="padding:8px;">NPR ${d.budget ? d.budget.toLocaleString() : '0'}</td></tr>
-        <tr><td style="padding:8px; font-weight:bold;">Contract Agreed Value:</td><td style="padding:8px;">NPR ${d.contract ? d.contract.toLocaleString() : '0'}</td></tr>
-        <tr><td style="padding:8px; font-weight:bold;">Milestone Payments:</td><td style="padding:8px;">NPR ${d.payment ? d.payment.toLocaleString() : '0'}</td></tr>
-        <tr><td style="padding:8px; font-weight:bold;">Execution Status:</td><td style="padding:8px;">${d.status} (${Math.round((d.progress||0)*100)}%)</td></tr>
-        <tr><td style="padding:8px; font-weight:bold;">Audit Remarks:</td><td style="padding:8px;">${d.remarks || '-'}</td></tr>
+  const p = _currentProject;
+  if (!p) return;
+
+  const rows = [
+    ['Project Name', p.name],
+    ['Nepali Name', p.nameNp],
+    ['District', p.district],
+    ['Type', p.type],
+    ['Contract No.', p.contractNo],
+    ['Contractor', p.contractor],
+    ['Owner/Proprietor', p.owner],
+    ['Phone', p.phone ? String(Math.round(p.phone)) : '—'],
+    ['Email', p.email],
+    ['Allocated Budget', p.budget ? 'NPR ' + (p.budget||0).toLocaleString() : '—'],
+    ['Cost Estimate', p.estimate ? 'NPR ' + (p.estimate||0).toLocaleString() : '—'],
+    ['Contract Amount', p.contract ? 'NPR ' + (p.contract||0).toLocaleString() : '—'],
+    ['Payment Made', p.payment ? 'NPR ' + (p.payment||0).toLocaleString() : '—'],
+    ['Physical Progress', pct(p.progress)],
+    ['Start Date', p.startDate || '—'],
+    ['End Date', p.endDate || '—'],
+    ['Status', p.status || '—'],
+    ['Approver', p.approver || '—'],
+    ['Committee', p.committee || '—'],
+    ['Remarks', p.remarks || '—'],
+  ].filter(([k,v]) => v && v !== '—' || k === 'Status');
+
+  const tableRows = rows.map(([k,v]) => `
+    <tr>
+      <td style="font-weight:600; color:#4a5568; width:38%; padding:8px 12px; border-bottom:1px solid #e2e8f0; font-size:12px;">${k}</td>
+      <td style="padding:8px 12px; border-bottom:1px solid #e2e8f0; color:#1a2332; font-size:12px; word-break:break-word;">${v||'—'}</td>
+    </tr>
+  `).join('');
+
+  const printHtml = `
+    <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 30px;">
+      <div style="background: linear-gradient(135deg,#1a3a5c,#2355a0); color:#fff; padding:20px 24px; border-radius:12px; margin-bottom:24px;">
+        <div style="font-size:10px; letter-spacing:1px; opacity:0.7; margin-bottom:4px;">URBAN DEVELOPMENT & BUILDING OFFICE, DOTI</div>
+        <div style="font-size:20px; font-weight:800; line-height:1.3;">${p.name||'Project Details'}</div>
+        <div style="font-size:12px; opacity:0.7; margin-top:4px;">UDBO Project Monitoring System • Printed: ${new Date().toLocaleDateString()}</div>
+      </div>
+      <table style="width:100%; border-collapse:collapse; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.1);">
+        ${tableRows}
       </table>
-      <div style="margin-top:60px; display:flex; justify-content:space-between; font-size:12px;">
-        <div>System Stamp Date: ${new Date().toLocaleDateString()}</div>
-        <div style="border-top:1px solid #000; width:200px; text-align:center; padding-top:4px;">Authorized Approver Signature</div>
+      <div style="text-align:center; margin-top:24px; font-size:11px; color:#94a3b8;">
+        UDBO Project Dashboard — Confidential Document
       </div>
     </div>
   `;
+
+  const printArea = document.getElementById('print-area');
+  printArea.innerHTML = printHtml;
+  printArea.style.display = 'block';
   window.print();
+  printArea.style.display = 'none';
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModalDirect();
+}
+
+function closeModalDirect() {
+  cancelEdit();
+  document.getElementById('modal-overlay').classList.remove('open');
 }
 </script>
 </body>
