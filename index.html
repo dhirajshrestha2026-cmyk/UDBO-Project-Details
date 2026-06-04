@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>UDBO Project Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a3a5c;
+      --primary-light: #2355a0;
+      --accent: #e85d04;
+      --accent2: #f4a261;
+      --success: #2d6a4f;
+      --success-light: #52b788;
+      --warning: #d4a017;
+      --danger: #c1121f;
+      --bg: #f0f4f8;
+      --card: #ffffff;
+      --text: #1a2332;
+      --text-muted: #6b7a8d;
+      --border: #dde3ec;
+      --shadow: 0 2px 12px rgba(26,58,92,0.10);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Syne', 'Noto Sans Devanagari', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    /* ======== LOGIN SCREEN ======== */
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #1a3a5c 0%, #2355a0 60%, #e85d04 150%);
+      padding: 24px;
+    }
+    .login-logo {
+      width: 80px; height: 80px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 24px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.25);
+    }
+    .login-title {
+      color: #fff;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .login-subtitle {
+      color: rgba(255,255,255,0.65);
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 36px;
+      font-weight: 400;
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .login-card h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: var(--primary);
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+      color: var(--text);
+      background: #f8fafc;
+    }
+    .form-group input:focus { border-color: var(--primary-light); background: #fff; }
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      margin-top: 8px;
+    }
+    .login-btn:active { transform: scale(0.98); }
+    .login-error {
+      background: #fee2e2;
+      color: var(--danger);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: none;
+      text-align: center;
+    }
+    .login-hint {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    /* ======== MAIN APP ======== */
+    #app { display: none; min-height: 100vh; }
+    /* Header */
+    .app-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      padding: 16px 20px 20px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .header-logo {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .header-logo-icon {
+      width: 38px; height: 38px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .header-logo-text {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .header-logo-sub {
+      color: rgba(255,255,255,0.6);
+      font-size: 10px;
+      font-weight: 400;
+    }
+    .logout-btn {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .logout-btn:hover { background: rgba(255,255,255,0.25); }
+    /* Search */
+    .search-bar {
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .search-bar input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 14px;
+      font-family: inherit;
+      flex: 1;
+    }
+    .search-bar input::placeholder { color: rgba(255,255,255,0.55); }
+    .search-icon { font-size: 16px; color: rgba(255,255,255,0.7); }
+    /* Nav Tabs */
+    .nav-tabs {
+      display: flex;
+      background: #fff;
+      border-bottom: 2px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-tab {
+      flex: none;
+      padding: 12px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: inherit;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+      margin-bottom: -2px;
+    }
+    .nav-tab.active {
+      color: var(--primary-light);
+      border-bottom-color: var(--primary-light);
+    }
+    /* Content */
+    .app-content { padding: 16px; padding-bottom: 32px; }
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent-color, var(--accent));
+    }
+    .stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .stat-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .stat-icon {
+      position: absolute;
+      top: 14px; right: 14px;
+      font-size: 24px;
+      opacity: 0.2;
+    }
+    /* Donut Chart */
+    .donut-section {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .donut-wrapper {
+      display: flex; align-items: center; gap: 20px;
+    }
+    .donut-svg { flex: none; }
+    .donut-legend { flex: 1; }
+    .legend-item {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+    .legend-dot {
+      width: 10px; height: 10px; border-radius: 50%; flex: none;
+    }
+    .legend-label { color: var(--text-muted); flex: 1; }
+    .legend-value { font-weight: 700; color: var(--text); }
+    /* Budget Bar */
+    .budget-section {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .budget-bar-wrap { margin-bottom: 12px; }
+    .budget-bar-label {
+      display: flex; justify-content: space-between;
+      font-size: 12px; margin-bottom: 6px;
+    }
+    .budget-bar-label span:first-child { color: var(--text-muted); font-weight: 600; }
+    .budget-bar-label span:last-child { color: var(--text); font-weight: 700; }
+    .budget-bar-bg {
+      height: 8px;
+      background: #e8edf3;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .budget-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+    /* District Bars */
+    .district-bar-row { margin-bottom: 12px; }
+    .district-bar-meta { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; font-weight: 600; }
+    .district-bar-label { color: var(--text); }
+    .district-bar-count { color: var(--text-muted); }
+    .district-bar-bg { height: 6px; background: #e8edf3; border-radius: 3px; overflow: hidden; }
+    .district-bar-fill { height: 100%; background: var(--primary-light); border-radius: 3px; }
+
+    /* Filter Row */
+    .filter-row {
+      display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto;
+      scrollbar-width: none; padding-bottom: 4px;
+    }
+    .filter-row::-webkit-scrollbar { display: none; }
+    .filter-chip {
+      flex: none;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      border: 2px solid var(--border);
+      background: var(--card);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .filter-chip.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    /* Project Cards */
+    .project-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border-left: 4px solid var(--status-color, var(--border));
+    }
+    .project-card:active { transform: scale(0.99); }
+    .project-card-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .project-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      flex: 1;
+      line-height: 1.4;
+      padding-right: 8px;
+    }
+    .status-badge {
+      flex: none;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .badge-running { background: #dbeafe; color: #1e40af; }
+    .badge-complete { background: #d1fae5; color: #065f46; }
+    .badge-null { background: #f1f5f9; color: #64748b; }
+    .badge-completed { background: #d1fae5; color: #065f46; }
+    .project-meta {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .meta-item {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .meta-item strong { color: var(--text); font-weight: 600; }
+    .progress-wrap { margin-top: 8px; }
+    .progress-label {
+      display: flex; justify-content: space-between;
+      font-size: 11px; margin-bottom: 4px;
+    }
+    .progress-label span { color: var(--text-muted); font-weight: 600; }
+    .progress-label strong { color: var(--primary-light); font-weight: 700; }
+    .progress-bg {
+      height: 6px;
+      background: #e8edf3;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+    /* Detail Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-sheet {
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      width: 100%;
+      max-width: 480px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 20px;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .modal-handle {
+      width: 40px; height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 0 auto 20px;
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      flex: 1;
+      padding-right: 12px;
+      line-height: 1.4;
+    }
+    .modal-close {
+      background: var(--bg);
+      border: none;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex: none;
+    }
+    .detail-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-key {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      flex: none;
+      width: 110px;
+    }
+    .detail-val {
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 600;
+      text-align: right;
+      flex: 1;
+      word-break: break-word;
+    }
+    .no-data {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+    .no-data .icon { font-size: 40px; margin-bottom: 12px; }
+    .count-badge {
+      background: var(--primary);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      margin-left: 6px;
+    }
+    /* ======== MODAL ACTION BUTTONS ======== */
+    .modal-actions {
+      display: flex; gap: 8px; margin-bottom: 18px;
+    }
+    .action-btn {
+      flex: 1;
+      padding: 10px 8px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .action-btn:active { transform: scale(0.97); }
+    .btn-edit {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 2px solid #bfdbfe;
+    }
+    .btn-print {
+      background: #f0fdf4;
+      color: #15803d;
+      border: 2px solid #bbf7d0;
+    }
+    .btn-save {
+      background: var(--primary);
+      color: #fff;
+      border: 2px solid var(--primary);
+    }
+    .btn-cancel {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 2px solid #fecaca;
+    }
+    /* ======== EDIT FORM ======== */
+    .edit-form { display: none; }
+    .edit-form.active { display: block; }
+    .view-body.hidden { display: none; }
+    .edit-group {
+      margin-bottom: 14px;
+    }
+    .edit-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 5px;
+    }
+    .edit-group input,
+    .edit-group select,
+    .edit-group textarea {
+      width: 100%;
+      padding: 10px 13px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: 'Noto Sans Devanagari', 'Syne', sans-serif;
+      color: var(--text);
+      background: #f8fafc;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: vertical;
+    }
+    .edit-group input:focus,
+    .edit-group select:focus,
+    .edit-group textarea:focus {
+      border-color: var(--primary-light);
+      background: #fff;
+    }
+    .edit-section-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin: 20px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--border);
+    }
+    .save-success {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      display: none;
+      margin-bottom: 12px;
+    }
+    /* ======== PRINT STYLES ======== */
+    @media print {
+      body * { visibility: hidden; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area {
+        position: fixed; left: 0; top: 0;
+        width: 100%; padding: 20px;
+        background: #fff;
+      }
+      .modal-overlay, .app-header, .nav-tabs, #login-screen { display: none !important; }
+    }
+    #print-area { display: none; }
+  </style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-logo">🏗️</div>
+  <div class="login-title">UDBO Project Portal</div>
+  <div class="login-subtitle">Urban Development & Building Office, Doti</div>
+  <div class="login-card">
+    <h2>Sign In to Continue</h2>
+    <div class="login-error" id="login-error">Invalid User ID or Password</div>
+    <div class="form-group">
+      <label>User ID</label>
+      <input type="text" id="user-id" placeholder="Enter your user ID" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Enter your password">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Sign In →</button>
+    <div class="login-hint">
+      Demo credentials:<br>
+      User ID: <strong>admin</strong> | Password: <strong>udbo2082</strong><br>
+      User ID: <strong>viewer</strong> | Password: <strong>view123</strong>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="app-header">
+    <div class="header-top">
+      <div class="header-logo">
+        <div class="header-logo-icon">🏗️</div>
+        <div>
+          <div class="header-logo-text">UDBO Dashboard</div>
+          <div class="header-logo-sub">Project Monitoring System</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Search projects, contractors..." oninput="filterProjects()">
+    </div>
+  </div>
+
+  <div class="nav-tabs" id="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('overview')">Overview</button>
+    <button class="nav-tab" onclick="switchTab('ncb')">NCB <span class="count-badge" id="ncb-count">0</span></button>
+    <button class="nav-tab" onclick="switchTab('sq')">SQ <span class="count-badge" id="sq-count">0</span></button>
+    <button class="nav-tab" onclick="switchTab('user')">User Committee <span class="count-badge" id="user-count">0</span></button>
+  </div>
+
+  <div class="app-content">
+    <div id="tab-overview">
+      <div class="stats-grid">
+        <div class="stat-card" style="--accent-color: #2355a0;">
+          <span class="stat-icon">📋</span>
+          <div class="stat-label">Total Projects</div>
+          <div class="stat-value" id="ov-total">0</div>
+          <div class="stat-sub">NCB + SQ + User</div>
+        </div>
+        <div class="stat-card" style="--accent-color: #2d6a4f;">
+          <span class="stat-icon">✅</span>          <div class="stat-label">Completed</div>
+          <div class="stat-value" id="ov-complete">0</div>
+          <div class="stat-sub">Fully done</div>
+        </div>
+        <div class="stat-card" style="--accent-color: #e85d04;">
+          <span class="stat-icon">🔄</span>
+          <div class="stat-label">Running</div>
+          <div class="stat-value" id="ov-running">0</div>
+          <div class="stat-sub">Active projects</div>
+        </div>
+        <div class="stat-card" style="--accent-color: #d4a017;">
+          <span class="stat-icon">💰</span>
+          <div class="stat-label">Total Budget</div>
+          <div class="stat-value" id="ov-budget">0</div>
+          <div class="stat-sub">NPR (Crore)</div>
+        </div>
+      </div>
+
+      <div class="donut-section">
+        <div class="section-title">📊 Project Type Breakdown</div>
+        <div class="donut-wrapper">
+          <svg class="donut-svg" width="110" height="110" viewBox="0 0 110 110" id="donut-svg"></svg>
+          <div class="donut-legend" id="donut-legend"></div>
+        </div>
+      </div>
+
+      <div class="budget-section">
+        <div class="section-title">💵 Financial Summary (NCB)</div>
+        <div class="budget-bar-wrap">
+          <div class="budget-bar-label">
+            <span>Allocated Budget</span>
+            <span id="ncb-budget-val">-</span>
+          </div>
+          <div class="budget-bar-bg">
+            <div class="budget-bar-fill" id="ncb-budget-bar" style="width:100%; background:#2355a0;"></div>
+          </div>
+        </div>
+        <div class="budget-bar-wrap">
+          <div class="budget-bar-label">
+            <span>Contract Amount</span>
+            <span id="ncb-contract-val">-</span>
+          </div>
+          <div class="budget-bar-bg">
+            <div class="budget-bar-fill" id="ncb-contract-bar" style="background:#e85d04;"></div>
+          </div>
+        </div>
+        <div class="budget-bar-wrap">
+          <div class="budget-bar-label">
+            <span>Payment Made</span>
+            <span id="ncb-payment-val">-</span>
+          </div>
+          <div class="budget-bar-bg">
+            <div class="budget-bar-fill" id="ncb-payment-bar" style="background:#2d6a4f;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="budget-section">
+        <div class="section-title">🗺️ District Distribution</div>
+        <div id="district-bars"></div>
+      </div>
+    </div>
+
+    <div id="tab-ncb" style="display:none;">
+      <div class="filter-row" id="ncb-filters"></div>
+      <div id="ncb-list"></div>
+    </div>
+
+    <div id="tab-sq" style="display:none;">
+      <div class="filter-row" id="sq-filters"></div>
+      <div id="sq-list"></div>
+    </div>
+
+    <div id="tab-user" style="display:none;">
+      <div id="user-list"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal-sheet" id="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title"></div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+
+    <div class="modal-actions" id="view-actions">
+      <button class="action-btn btn-edit" onclick="enterEditMode()">✏️ Edit</button>
+      <button class="action-btn btn-print" onclick="printProject()">🖨️ Print</button>
+    </div>
+
+    <div class="modal-actions" id="edit-actions" style="display:none;">
+      <button class="action-btn btn-save" onclick="saveEdits()">💾 Save Changes</button>
+      <button class="action-btn btn-cancel" onclick="cancelEdit()">✕ Cancel</button>
+    </div>
+
+    <div class="save-success" id="save-success">✅ Changes saved successfully!</div>
+
+    <div id="modal-body" class="view-body"></div>
+
+    <div id="edit-form" class="edit-form"></div>
+  </div>
+</div>
+
+<div id="print-area"></div>
+
+<script>
+// ===== AUTH =====
+const USERS = {
+  'admin': 'udbo2082',
+  'viewer': 'view123'
+};
+
+let currentUser = '';
+
+function doLogin() {
+  const uid = document.getElementById('user-id').value.trim();
+  const pwd = document.getElementById('password').value;
+  const err = document.getElementById('login-error');
+
+  if (USERS[uid] && USERS[uid] === pwd) {
+    currentUser = uid;
+    err.style.display = 'none';
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    
+    // Toggle edit access based on credentials
+    if(currentUser === 'viewer') {
+      document.querySelector('.btn-edit').style.display = 'none';
+    } else {
+      document.querySelector('.btn-edit').style.display = 'flex';
+    }
+    
+    initApp();
+  } else {
+    err.style.display = 'block';
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+    doLogin();
+  }
+});
+
+function doLogout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('user-id').value = '';
+  document.getElementById('password').value = '';
+}
+
+// ===== CORE DATA MANAGEMENT =====
+const RAW = {
+  "ncb": [
+    {
+      "id": 1,
+      "name": "Infrastructure Construction Work in Panchodaya Primary School Compound, Ward No. 4, Shikhar Municipality, Doti District",
+      "nameNp": "डोटी जिल्ला शिखर नगरपालिका वडा न ४ पञ्चोदय आधारभुत विद्यालय परिसरमा पूर्वाधार निर्माण कार्य",
+      "district": "डोटी",
+      "type": "भवन निर्माण (Building)",
+      "contractNo": "UDBO-Doti/NCB/Building/01/082/083/Doti",
+      "contractor": "HL Construction & Suppliers, Dipayal Silgadhi-04, Doti",
+      "owner": "Mr.Tej Bahadur Bohara",
+      "phone": "9858481322",
+      "email": "hlconstruction008@gmail.com",
+      "budget": 10000000.0,
+      "estimate": 11089607.46,
+      "contract": 8103065.93,
+      "payment": 0,
+      "progress": 0.5,
+      "startDate": "2026-04-01",
+      "endDate": "2026-06-29",
+      "status": "Running Project",
+      "remarks": "निर्माणाधिन",
+      "approver": "Division Chief Er. Govinda prasad Devkota"
+    },
+    {
+      "id": 2,
+      "name": "construction of Mureda-Aleban - Loligat-Lai -Nadi- Pipalla Roads, K. I. Singh Rural Mun. Doti",
+      "nameNp": "मुरेडा - अल्लेवन - लोलीघाटा - लाय - नादी - पिपल्ला सडक, डोटी",
+      "district": "डोटी",
+      "type": "सडक (Roads)",
+      "contractNo": "UDBO-Doti/NCB/Roads/02/082/083/Doti",
+      "contractor": "Jagannath Construction & Suppliers",
+      "owner": "Mr.Satish Khadka",
+      "phone": "9869443491",
+      "email": "chetkhadkadoti@gmail.com",
+      "budget": 2500000.0,
+      "estimate": 2436366.3,
+      "contract": 1644806.0,
+      "payment": 0,
+      "progress": 0.6,
+      "startDate": "2026-04-01",
+      "endDate": "2026-06-29",
+      "status": "Running Project",
+      "remarks": "निर्माण कार्य भैरहेको",
+      "approver": "Division Chief Er. Govinda prasad Devkota"
+    },
+    {
+      "id": 3,
+      "name": "Construction of Simachaur Ma. Bi. School Building and Finishing Works",
+      "nameNp": "डोटी जिल्ला बोगटान गाउँपालिका वडा नं १ सिमचौर मा.वि परिसरमा पूर्वाधार स्तरोन्नति कार्य",
+      "district": "डोटी",
+      "type": "भवन (Building)",
+      "contractNo": "UDBO-Doti/NCB/Building/03/082/083/Doti",
+      "contractor": "R. N. Nirman Sewa Pvt. Ltd.",
+      "owner": "Mr. Harka Bahadur Bist",
+      "phone": "9848540962",
+      "email": "chetkhadkadoti@gmail.com",
+      "budget": 10000000.0,
+      "estimate": 5695388.16,
+      "contract": 5695388.16,
+      "payment": 0,
+      "progress": 0.1,
+      "startDate": "2026-03-30",
+      "endDate": "2026-06-29",
+      "status": "Running Project",
+      "remarks": "निर्माण कार्य भैरहेको",
+      "approver": "Division Chief Er. Govinda prasad Devkota"
+    },
+    {
+      "id": 4,
+      "name": "Thati Deulikhad Road Construction Project",
+      "nameNp": "ठाटी देउलीखाद सडक निर्माण योजना साँफेबगर न पा १० र ११ अछाम",
+      "district": "अछाम",
+      "type": "सडक (Roads)",
+      "contractNo": "UDBO-Doti/NCB/Roads/04/082/083/Achham",
+      "contractor": "Malika Nirman Sewa, Achham",
+      "owner": "Mr.Bharat Bahadur Shah",
+      "phone": "9848681445",
+      "email": "malikanirmans@yahoo.com",
+      "budget": 4500000.0,
+      "estimate": 4380107.91,
+      "contract": 2722565.9,
+      "payment": 0,
+      "progress": 0.1,
+      "startDate": "2026-03-23",
+      "endDate": "2026-06-29",
+      "status": "Running Project",
+      "remarks": "निर्माण कार्य भैरहेको",
+      "approver": null
+    },
+    {
+      "id": 5,
+      "name": "Gairilekh–Lugada Road Upgrading, Chaurpati Ward No. 1, Achham.",
+      "nameNp": "गैरीलेक लुगाडा सडक स्तरोन्नति चौरपाटी १ अछाम",
+      "district": "अछाम",
+      "type": "सडक (Roads)",
+      "contractNo": "UDBO-Doti/NCB/Roads/05/082/083/Achham",
+      "contractor": "Malika Nirman Sewa, Achham",
+      "owner": "Mr.Bharat Bahadur Shah",
+      "phone": "9848681445",
+      "email": "malikanirmans@yahoo.com",
+      "budget": 2500000.0,
+      "estimate": 2434585.39,
+      "contract": 1401653.0,
+      "payment": 1172103.4,
+      "progress": 1.0,
+      "startDate": "2026-03-23",
+      "endDate": "2026-06-29",
+      "status": "Complete",
+      "remarks": "निर्माण कार्य complete",
+      "approver": "Division Chief Er. Govinda prasad Devkota"
+    },
+    {
+      "id": 6,
+      "name": "Deulikhad–Vijaypur Road Construction Project",
+      "nameNp": "देउलीखाद विजयपुर सडक निर्माण योजना साँफेबगर न पा ११ अछाम",
+      "district": "अछाम",
+      "type": "सडक (Roads)",
+      "contractNo": "UDBO-Doti/NCB/Roads/06/082/083/Achham",
+      "contractor": "Shodashadevi Nirman Sewa Pvt. Ltd., Achham",
+      "owner": "Mr.Gokul Bhat",
+      "phone": "9865652377",
+      "email": "bhatgokul35@gmail.com",
+      "budget": 2500000.0,
+      "estimate": 2431728.42,
+      "contract": 1664845.04,
+      "payment": 0,
+      "progress": 0.2,
+      "startDate": "2026-04-04",
+      "endDate": "2026-06-29",
+      "status": "Running Project",
+      "remarks": "Original Bank guarantee not submitted in office",
+      "approver": "Division Chief Er. Govinda prasad Devkota"
+    },
+    {
+      "id": 7,
+      "name": "Babla–Deval–Putru–Bherasain Road Construction Project, Safebagar Municipality Wards No. 12 and 13, Achham.",
+      "nameNp": "बाब्ला देवल पुत्रु भेरासैन सडक निर्माण योजना साँफेबगर न पा १२ र १३ अछाम",
+      "district": "अछाम",
+      "type": "सडक (Roads)",
+      "contractNo": "UDBO-Doti/NCB/Roads/07/082/083/Achham",
+      "contractor": "Khaptad Baba Nirman sewa & order Suppliers, bajura",
+      "owner": "Mr.Bikram Rawal",
+      "phone": "9843413182",
+      "email": "rawalbikram33@gmail.com",
+      "budget": 2500000.0,
+      "estimate": 2432474.45,
+      "contract": 1678212.54,
+      "payment": 1427149.96,
+      "progress": 1.0,
+      "startDate": "2026-04-06",
+      "endDate": "2026-06-29",
+      "status": "Complete",
+      "remarks": "निर्माण कार्य सम्पन्न",
+      "approver": "Division Chief Er. Govinda prasad Devkota"
+    },
+    {
+      "id": 8,
+      "name": "Road Construction Project from Khaptad Gulum to Saraswati Primary School",
+      "nameNp": "खप्तड गुल्म हुदै सरस्वती आ वि सम्म सडक निर्माण योजना साँफेबगर न पा ७ अछाम",
+      "district": "अछाम",
+      "type": "सडक (Roads)",
+      "contractNo": "UDBO-Doti/NCB/Roads/08/082/083/Achham",
+      "contractor": "Indrasara Construction, Achham",
+      "owner": "Mr.Ashok Shah",
+      "phone": "9849158427",
+      "email": "indrasaraconstruction@gmail.com",
+      "budget": 2500000.0,
+      "estimate": 2435059.84,
+      "contract": 1457503.6,
+      "payment": 0,
+      "progress": 0.6,
+      "startDate": "2026-04-07",
+      "endDate": "2026-06-29",
+      "status": "Running Project",
+      "remarks": "बैंक ग्यारेण्टी र Insurance नआएको",
+      "approver": "Division Chief Er. Govinda prasad Devkota"
+    },
+    {
+      "id": 9,
+      "name": "Road Construction from Daygada Dhokdina to Baskatiya",
+      "nameNp": "दयगडा ढोकदिना देखि बासकाटिया सम्म सडक निर्माण सा नपा ०३ अछाम",
+      "district": "अछाम",
+      "type": "सडक (Roads)",
+      "contractNo": "UDBO-Doti/NCB/Roads/09/082/083/Achham",
+      "contractor": "Malika Nirman Sewa, Achham",
+      "owner": "Mr.Bharat Bahadur Shah",
+      "phone": "9848681445",
+      "email": "malikanirmans@yahoo.com",
+      "budget": 4000000.0,
+      "estimate": 3895297.79,
+      "contract": 2373544.72,
+      "payment": 0,
+      "progress": 1.0,
+      "startDate": "2026-04-08",
+      "endDate": "2026-06-29",
+      "status": "Complete",
+      "remarks": "भुक्तानी गरिएको",
+      "approver": "Division Chief Er. Govinda prasad Devkota"
+    },
+    {
+      "id": 10,
+      "name": "Martadi Multipurpose Sports Ground Construction",
+      "nameNp": "मार्तडी बहुउद्देश्यीय खेलमैदान निर्माण, बाजुरा",
+      "district": "बाजुरा",
+      "type": "खेलमैदान (Playground)",
+      "contractNo": "UDBO-Doti/NCB/Playground/10/082/083/Bajura",
+      "contractor": "T.S. Construction & Oder Suppliers, Bajura",
+      "owner": "Mrs.Tara Kumari Rokaya",
+      "phone": "9858480801",
+      "email": "santoshdadal01@gmail.com",
+      "budget": 2500000.0,
+      "estimate": 2422609.41,
+      "contract": 1159827.7,
+      "payment": 0,
+      "progress": 0.3,
+      "startDate": "2026-04-09",
+      "endDate": "2026-06-29",
+      "status": "Running Project",
+      "remarks": "Insurance and signboard pending",
+      "approver": "Division Chief Er. Govinda prasad Devkota"
+    },
+    {
+      "id": 11,
+      "name": "Trail Construction from Halane to Bageshwar",
+      "nameNp": "हलाने देखि भागेश्वर सम्म पदमार्ग निर्माण डडेल्धुरा",
+      "district": "डडेल्धुरा",
+      "type": "सडक (Roads)",
+      "contractNo": "UDBO-Doti/NCB/Roads/11/082/083/Dadeldhura",
+      "contractor": "Omtara Constrution, Dadeldhura",
+      "owner": "Mr.Sher Bahadur Dhat",
+      "phone": "9865918845",
+      "email": "rupacdadeldhura@gmail.com",
+      "budget": 2500000.0,
+      "estimate": 2401289.78,
+      "contract": 2029611.93,
+      "payment": 0,
+      "progress": 0.7,
+      "startDate": "2026-04-10",
+      "endDate": "2026-06-29",
+      "status": "Running Project",
+      "remarks": "निर्माण कार्य भैरहेको",
+      "approver": "Division Chief Er. Govinda prasad Devkota"
+    },
+    {
+      "id": 12,
+      "name": "Road Upgrading Work from Bagbazar to Thalouta",
+      "nameNp": "डडेलधुरा जिल्ला अमरगढी नगरपालिका वडा न १ बागवजार थलौटा सडक स्तरोन्नति कार्य",
+      "district": "डडेल्धुरा",
+      "type": "सडक (Roads)",
+      "contractNo": "UDBO-Doti/NCB/Roads/12/082/083/Dadeldhura",
+      "contractor": "Himanshu Engineering Consultancy and Construction, Dadeldhura",
+      "owner": "Mr.Surendra Bahadur Bist",
+      "phone": "9851190048",
+      "email": "gauli.surendra@gmail.com",
+      "budget": 10000000.0,
+      "estimate": 9739208.32,
+      "contract": 5640683.79,
+      "payment": 0,
+      "progress": 0.4,
+      "startDate": "2026-04-11",
+      "endDate": "2026-06-29",
+      "status": "Running Project",
+      "remarks": "निर्माण कार्य भैरहेको",
+      "approver": "Division Chief Er. Govinda prasad Devkota"
+    },
+    {
+      "id": 13,
+      "name": "Road Upgrading Work: Bagarkot Seragad Webal Seragah Ninali Pilkot",
+      "nameNp": "डडेल्धुरा जिल्ला अजयमेरु ग़उँपालिका बगरकोट, सेरागाड, वेवल, सेरागाह निनाली, पिलकोट सडक स्तरोन्नति कार्य।",
+      "district": "डडेल्धुरा",
+      "type": "सडक (Roads)",
+      "contractNo": "UDBO/Works/NCB/Roads/13/082/083/Dadeldhura",
+      "contractor": "Bipin Nirman Sewa, Dadeldhura",
+      "owner": "Mr.Janak Bahadur Dhanuk",
+      "phone": "9864766779",
+      "email": "bipinnirmansewa08@gmail.com",
+      "budget": 16000000.0,
+      "estimate": 15569083.67,
+      "contract": 8855610.07,
+      "payment": 0,
+      "progress": 0.4,
+      "startDate": "2026-04-12",
+      "endDate": "2026-06-29",
+      "status": "Running Project",
+      "remarks": "निर्माण कार्य भैरहेको",
+      "approver": "Division Chief Er. Govinda prasad Devkota"
+    },
+    {
+      "id": 14,
+      "name": "Construction of Mangalsen Bus Park and Drainage Management",
+      "nameNp": "अछाम जिल्ला मंगलसेन नगरपालिका वडा न ३ मंगलसेन बसपार्क निर्माण तथा नाली व्यवस्थापन",
+      "district": "अछाम",
+      "type": "बसपार्क (Buspark)",
+      "contractNo": "UDBO-Doti/NCB/Buspark/14/082/083/Achham",
+      "contractor": "Padmaratna Construction and Consultants Pvt. Ltd., Achham",
+      "owner": "Mr.Dipa Khatri Thapa",
+      "phone": "9865745705",
+      "email": "nbthapa2079@gmail.com",
+      "budget": 16000000.0,
+      "estimate": 15579153.92,
+      "contract": 9395599.36,
+      "payment": 0,
+      "progress": 0.1,
+      "startDate": "2026-04-13",
+      "endDate": "2026-06-29",
+      "status": "Running Project",
+      "remarks": "निर्माण कार्य भैरहेको",
+      "approver": "Division Chief Er. Govinda prasad Devkota"
+    },
+    {
+      "id": 15,
+      "name": "Road Upgrading Works at Liudemela–Dhaulakada Road",
+      "nameNp": "बु.न.पा. ८, ९ ल्यूडेमेला धौलाकडा सडक स्तरोन्नति",
+      "district": "बाजुरा",
+      "type": "सडक (Roads)",
+      "contractNo": "UDBO-Doti/NCB/Roads/15/082/083/Bajura",
+      "contractor": "Kankrebihar Nirman Sewa",
+      "owner": "Mr. Tek Bahadur Thapa",
+      "phone": "9851000000",
+      "email": "kankre@gmail.com",
+      "budget": 5000000.0,
+      "estimate": 4950000.00,
+      "contract": 3850000.00,
+      "payment": 0,
+      "progress": 0.25,
+      "startDate": "2026-04-15",
+      "endDate": "2026-07-15",
+      "status": "Running Project",
+      "remarks": "प्रारम्भिक चरणमा",
+      "approver": "Division Chief Er. Govinda prasad Devkota"
+    }
+  ],
+  "sq": [],
+  "user": []
+};
+
+let selectedTab = 'overview';
+let activeFilterDistrict = 'All';
+let currentEditingId = null;
+
+function initApp() {
+  updateCounts();
+  renderOverview();
+  renderProjectLists();
+}
+
+function updateCounts() {
+  document.getElementById('ncb-count').innerText = RAW.ncb.length;
+  document.getElementById('sq-count').innerText = RAW.sq.length;
+  document.getElementById('user-count').innerText = RAW.user.length;
+}
+
+function switchTab(tabId) {
+  selectedTab = tabId;
+  const tabs = document.querySelectorAll('.nav-tab');
+  tabs.forEach(t => t.classList.remove('active'));
+  
+  // Update UI active states
+  const index = ['overview', 'ncb', 'sq', 'user'].indexOf(tabId);
+  if(index !== -1) tabs[index].classList.add('active');
+
+  document.getElementById('tab-overview').style.display = tabId === 'overview' ? 'block' : 'none';
+  document.getElementById('tab-ncb').style.display = tabId === 'ncb' ? 'block' : 'none';
+  document.getElementById('tab-sq').style.display = tabId === 'sq' ? 'block' : 'none';
+  document.getElementById('tab-user').style.display = tabId === 'user' ? 'block' : 'none';
+}
+
+// ===== OVERVIEW COMPONENT RENDERING =====
+function renderOverview() {
+  const totalCount = RAW.ncb.length + RAW.sq.length + RAW.user.length;
+  const completedCount = RAW.ncb.filter(p => p.status === 'Complete').length;
+  const runningCount = totalCount - completedCount;
+  
+  let totalBudget = 0;
+  let totalContract = 0;
+  let totalPayment = 0;
+
+  RAW.ncb.forEach(p => {
+    totalBudget += p.budget || 0;
+    totalContract += p.contract || 0;
+    totalPayment += p.payment || 0;
+  });
+
+  document.getElementById('ov-total').innerText = totalCount;
+  document.getElementById('ov-complete').innerText = completedCount;
+  document.getElementById('ov-running').innerText = runningCount;
+  document.getElementById('ov-budget').innerText = (totalBudget / 10000000).toFixed(2);
+
+  // Financial Bars
+  document.getElementById('ncb-budget-val').innerText = 'NPR ' + totalBudget.toLocaleString();
+  document.getElementById('ncb-contract-val').innerText = 'NPR ' + totalContract.toLocaleString();
+  document.getElementById('ncb-payment-val').innerText = 'NPR ' + totalPayment.toLocaleString();
+
+  document.getElementById('ncb-contract-bar').style.width = ((totalContract / totalBudget) * 100) + '%';
+  document.getElementById('ncb-payment-bar').style.width = ((totalPayment / totalBudget) * 100) + '%';
+
+  // Dynamic charts
+  buildDistrictDistribution();
+  buildTypeBreakdownChart();
+}
+
+function buildDistrictDistribution() {
+  const container = document.getElementById('district-bars');
+  container.innerHTML = '';
+  
+  const counts = {};
+  RAW.ncb.forEach(p => counts[p.district] = (counts[p.district] || 0) + 1);
+  
+  const max = Math.max(...Object.values(counts));
+  
+  Object.keys(counts).forEach(dist => {
+    const count = counts[dist];
+    const pct = (count / max) * 100;
+    
+    container.innerHTML += `
+      <div class="district-bar-row">
+        <div class="district-bar-meta">
+          <span class="district-bar-label">${dist}</span>
+          <span class="district-bar-count">${count} Project(s)</span>
+        </div>
+        <div class="district-bar-bg">
+          <div class="district-bar-fill" style="width: ${pct}%"></div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function buildTypeBreakdownChart() {
+  const svg = document.getElementById('donut-svg');
+  const legend = document.getElementById('donut-legend');
+  svg.innerHTML = '';
+  legend.innerHTML = '';
+
+  const types = {};
+  RAW.ncb.forEach(p => {
+    const cleanType = p.type.split(' (')[0];
+    types[cleanType] = (types[cleanType] || 0) + 1;
+  });
+
+  const colors = ['#1a3a5c', '#e85d04', '#2d6a4f', '#d4a017', '#c1121f'];
+  const total = RAW.ncb.length;
+  let accumulatedAngle = 0;
+  let colorIndex = 0;
+
+  Object.keys(types).forEach(type => {
+    const count = types[type];
+    const percentage = (count / total) * 100;
+    const sliceAngle = (count / total) * 360;
+
+    // SVG arc drawing math
+    const r = 40;
+    const cx = 55;
+    const cy = 55;
+
+    const x1 = cx + r * Math.cos((accumulatedAngle - 90) * Math.PI / 180);
+    const y1 = cy + r * Math.sin((accumulatedAngle - 90) * Math.PI / 180);
+    
+    accumulatedAngle += sliceAngle;
+    
+    const x2 = cx + r * Math.cos((accumulatedAngle - 90) * Math.PI / 180);
+    const y2 = cy + r * Math.sin((accumulatedAngle - 90) * Math.PI / 180);
+    
+    const largeArc = sliceAngle > 180 ? 1 : 0;
+    const pathData = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+    
+    const color = colors[colorIndex % colors.length];
+    
+    svg.innerHTML += `<path d="${pathData}" fill="${color}" stroke="#fff" stroke-width="1.5"></path>`;
+    legend.innerHTML += `
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${color}"></div>
+        <div class="legend-label">${type}</div>
+        <div class="legend-value">${count}</div>
+      </div>
+    `;
+    colorIndex++;
+  });
+
+  // Inner knockout hole for donut visual look
+  svg.innerHTML += `<circle cx="55" cy="55" r="22" fill="#ffffff"></circle>`;
+}
+
+// ===== PROJECT TAB RECORDS LIST RENDERING =====
+function renderProjectLists() {
+  buildFilterChips('ncb');
+  buildFilterChips('sq');
+  filterProjects();
+}
+
+function buildFilterChips(type) {
+  const row = document.getElementById(`${type}-filters`);
+  if (!row) return;
+
+  const districts = ['All', ...new Set(RAW[type].map(p => p.district))];
+  row.innerHTML = districts.map(d => `
+    <button class="filter-chip ${d === activeFilterDistrict ? 'active' : ''}" onclick="setDistrictFilter('${type}', '${d}')">${d}</button>
+  `).join('');
+}
+
+function setDistrictFilter(tab, district) {
+  activeFilterDistrict = district;
+  buildFilterChips(tab);
+  filterProjects();
+}
+
+function filterProjects() {
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+  
+  ['ncb', 'sq', 'user'].forEach(type => {
+    const list = document.getElementById(`${type}-list`);
+    if (!list) return;
+
+    let filtered = RAW[type];
+
+    if (type !== 'user' && activeFilterDistrict !== 'All') {
+      filtered = filtered.filter(p => p.district === activeFilterDistrict);
+    }
+
+    if (q) {
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(q) || 
+        p.contractor.toLowerCase().includes(q) || 
+        (p.contractNo && p.contractNo.toLowerCase().includes(q))
+      );
+    }
+
+    if(filtered.length === 0) {
+      list.innerHTML = `<div class="no-data"><div class="icon">🔍</div>No matching project modules found.</div>`;
+      return;
+    }
+
+    list.innerHTML = filtered.map(p => {
+      const isComplete = p.status === 'Complete';
+      const statusClass = isComplete ? 'badge-complete' : 'badge-running';
+      const accentColor = isComplete ? 'var(--success)' : 'var(--primary-light)';
+      const progressPercent = Math.round((p.progress || 0) * 100);
+
+      return `
+        <div class="project-card" style="--status-color: ${accentColor}" onclick="openProjectModal('${type}', ${p.id})">
+          <div class="project-card-top">
+            <div class="project-name">${p.name}</div>
+            <span class="status-badge ${statusClass}">${p.status || 'Running'}</span>
+          </div>
+          <div class="project-meta">
+            <div class="meta-item">📍 <strong>${p.district}</strong></div>
+            <div class="meta-item">📋 ID: <strong>${p.contractNo ? p.contractNo.split('/').slice(-3, -1).join('-') : p.id}</strong></div>
+            <div class="meta-item">💰 NPR <strong>${(p.budget/100000).toFixed(1)}L</strong></div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-label">
+              <span>Physical Status Progress</span>
+              <strong>${progressPercent}%</strong>
+            </div>
+            <div class="progress-bg">
+              <div class="progress-fill" style="width: ${progressPercent}%; background: ${accentColor}"></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  });
+}
+
+// ===== DETAILED OVERLAY SHEET & EDIT OPERATIONS =====
+let activeTargetObject = null;
+
+function openProjectModal(type, id) {
+  const item = RAW[type].find(p => p.id === id);
+  if(!item) return;
+
+  activeTargetObject = { type, id, data: item };
+  currentEditingId = id;
+
+  document.getElementById('modal-title').innerText = item.name;
+  
+  // Render analytical clean layout values
+  const body = document.getElementById('modal-body');
+  body.innerHTML = `
+    <div class="detail-row"><div class="detail-key">Nepali Description</div><div class="detail-val" style="font-family: 'Noto Sans Devanagari'">${item.nameNp || '-'}</div></div>
+    <div class="detail-row"><div class="detail-key">District Assignment</div><div class="detail-val">${item.district}</div></div>
+    <div class="detail-row"><div class="detail-key">Structural Type</div><div class="detail-val">${item.type}</div></div>
+    <div class="detail-row"><div class="detail-key">Contract Identity #</div><div class="detail-val"><code>${item.contractNo || '-'}</code></div></div>
+    <div class="detail-row"><div class="detail-key">Contractor Lead</div><div class="detail-val">${item.contractor || '-'}</div></div>
+    <div class="detail-row"><div class="detail-key">Proprietor Contact</div><div class="detail-val">${item.owner || '-'} (${item.phone || '-'})</div></div>
+    <div class="detail-row"><div class="detail-key">Financial Allotment</div><div class="detail-val">NPR ${item.budget ? item.budget.toLocaleString() : '0'}</div></div>
+    <div class="detail-row"><div class="detail-key">Office Estimate</div><div class="detail-val">NPR ${item.estimate ? item.estimate.toLocaleString() : '0'}</div></div>
+    <div class="detail-row"><div class="detail-key">Agreed Bid Amount</div><div class="detail-val">NPR ${item.contract ? item.contract.toLocaleString() : '0'}</div></div>
+    <div class="detail-row"><div class="detail-key">Disbursed Balance</div><div class="detail-val">NPR ${item.payment ? item.payment.toLocaleString() : '0'}</div></div>
+    <div class="detail-row"><div class="detail-key">Current Status</div><div class="detail-val"><strong>${item.status || 'Running'}</strong> (${Math.round((item.progress||0)*100)}%)</div></div>
+    <div class="detail-row"><div class="detail-key">Timeline</div><div class="detail-val">📅 ${item.startDate} to ${item.endDate}</div></div>
+    <div class="detail-row"><div class="detail-key">Field Inspector Audit</div><div class="detail-val">${item.remarks || '-'}</div></div>
+    <div class="detail-row"><div class="detail-key">Authority Executive</div><div class="detail-val">${item.approver || 'Pending Assignment'}</div></div>
+  `;
+
+  cancelEdit(); // Reset frame to default viewer presentation state
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function enterEditMode() {
+  if (currentUser === 'viewer') return;
+  
+  const form = document.getElementById('edit-form');
+  const d = activeTargetObject.data;
+
+  form.innerHTML = `
+    <div class="edit-section-title">Core Description Parameters</div>
+    <div class="edit-group">
+      <label>English Meta Name</label>
+      <input type="text" id="edit-name" value="${d.name.replace(/"/g, '&quot;')}">
+    </div>
+    <div class="edit-group">
+      <label>Devanagari Localized Name</label>
+      <input type="text" id="edit-nameNp" value="${(d.nameNp || '').replace(/"/g, '&quot;')}">
+    </div>
+    
+    <div class="edit-section-title">Logistical Distribution Tracking</div>
+    <div class="edit-group">
+      <label>Target District Zone</label>
+      <input type="text" id="edit-district" value="${d.district}">
+    </div>
+    <div class="edit-group">
+      <label>Contract Assignment Identity Key</label>
+      <input type="text" id="edit-contractNo" value="${d.contractNo || ''}">
+    </div>
+    <div class="edit-group">
+      <label>Assigned Engineering Firm</label>
+      <input type="text" id="edit-contractor" value="${d.contractor || ''}">
+    </div>
+
+    <div class="edit-section-title">Allotments & Financial Records</div>
+    <div class="edit-group">
+      <label>Office Estimated Value (NPR)</label>
+      <input type="number" id="edit-estimate" value="${d.estimate || 0}">
+    </div>
+    <div class="edit-group">
+      <label>Contract Aggreed Value (NPR)</label>
+      <input type="number" id="edit-contract" value="${d.contract || 0}">
+    </div>
+    <div class="edit-group">
+      <label>Disbursed Milestone Payment (NPR)</label>
+      <input type="number" id="edit-payment" value="${d.payment || 0}">
+    </div>
+
+    <div class="edit-section-title">Field Progress Conditions</div>
+    <div class="edit-group">
+      <label>Physical Execution Metrics (0.0 to 1.0 representation)</label>
+      <input type="number" step="0.01" min="0" max="1" id="edit-progress" value="${d.progress || 0}">
+    </div>
+    <div class="edit-group">
+      <label>Current Administrative Milestone State</label>
+      <select id="edit-status">
+        <option value="Running Project" ${d.status === 'Running Project' ? 'selected' : ''}>Running Project</option>
+        <option value="Complete" ${d.status === 'Complete' ? 'selected' : ''}>Complete</option>
+      </select>
+    </div>
+    <div class="edit-group">
+      <label>Engineering Desk Evaluation Remarks</label>
+      <textarea id="edit-remarks" rows="2">${d.remarks || ''}</textarea>
+    </div>
+  `;
+
+  document.getElementById('modal-body').classList.add('hidden');
+  document.getElementById('view-actions').style.display = 'none';
+  
+  form.classList.add('active');
+  document.getElementById('edit-actions').style.display = 'flex';
+}
+
+function cancelEdit() {
+  document.getElementById('edit-form').classList.remove('active');
+  document.getElementById('edit-actions').style.display = 'none';
+  
+  document.getElementById('modal-body').classList.remove('hidden');
+  if(currentUser !== 'viewer') {
+    document.getElementById('view-actions').style.display = 'flex';
+  }
+}
+
+function saveEdits() {
+  const d = activeTargetObject.data;
+
+  // Map updated structural records
+  d.name = document.getElementById('edit-name').value.trim();
+  d.nameNp = document.getElementById('edit-nameNp').value.trim();
+  d.district = document.getElementById('edit-district').value.trim();
+  d.contractNo = document.getElementById('edit-contractNo').value.trim();
+  d.contractor = document.getElementById('edit-contractor').value.trim();
+  d.estimate = parseFloat(document.getElementById('edit-estimate').value) || 0;
+  d.contract = parseFloat(document.getElementById('edit-contract').value) || 0;
+  d.payment = parseFloat(document.getElementById('edit-payment').value) || 0;
+  d.progress = parseFloat(document.getElementById('edit-progress').value) || 0;
+  d.status = document.getElementById('edit-status').value;
+  d.remarks = document.getElementById('edit-remarks').value.trim();
+
+  // Commit and flash message framework update notifications
+  initApp(); 
+  
+  const successLabel = document.getElementById('save-success');
+  successLabel.style.display = 'block';
+  setTimeout(() => { successLabel.style.display = 'none'; }, 2500);
+
+  openProjectModal(activeTargetObject.type, activeTargetObject.id);
+}
+
+function closeModal(e) {
+  if(e.target.id === 'modal-overlay') closeModalDirect();
+}
+
+function closeModalDirect() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ===== SYSTEM UTILITY - PRINT GENERATOR =====
+function printProject() {
+  const d = activeTargetObject.data;
+  const printArea = document.getElementById('print-area');
+  
+  printArea.innerHTML = `
+    <div style="font-family: Arial, sans-serif; padding:30px; border:3px double #1a3a5c;">
+      <h2 style="color:#1a3a5c; margin-bottom:4px; text-transform:uppercase;">Urban Development & Building Office</h2>
+      <h4 style="color:#6b7a8d; margin-bottom:24px; border-bottom:2px solid #1a3a5c; padding-bottom:8px;">Project Execution Audit Receipt</h4>
+      
+      <table style="width:100%; border-collapse:collapse; font-size:14px;">
+        <tr><td style="padding:8px; font-weight:bold; width:180px;">Project Title:</td><td style="padding:8px;">${d.name}</td></tr>
+        <tr><td style="padding:8px; font-weight:bold;">Local Title:</td><td style="padding:8px;">${d.nameNp || '-'}</td></tr>
+        <tr><td style="padding:8px; font-weight:bold;">Contract Key ID:</td><td style="padding:8px;"><code>${d.contractNo || '-'}</code></td></tr>
+        <tr><td style="padding:8px; font-weight:bold;">District Territory:</td><td style="padding:8px;">${d.district}</td></tr>
+        <tr><td style="padding:8px; font-weight:bold;">Engineering Firm:</td><td style="padding:8px;">${d.contractor || '-'}</td></tr>
+        <tr><td style="padding:8px; font-weight:bold;">Assigned Allotment:</td><td style="padding:8px;">NPR ${d.budget ? d.budget.toLocaleString() : '0'}</td></tr>
+        <tr><td style="padding:8px; font-weight:bold;">Contract Agreed Value:</td><td style="padding:8px;">NPR ${d.contract ? d.contract.toLocaleString() : '0'}</td></tr>
+        <tr><td style="padding:8px; font-weight:bold;">Milestone Payments:</td><td style="padding:8px;">NPR ${d.payment ? d.payment.toLocaleString() : '0'}</td></tr>
+        <tr><td style="padding:8px; font-weight:bold;">Execution Status:</td><td style="padding:8px;">${d.status} (${Math.round((d.progress||0)*100)}%)</td></tr>
+        <tr><td style="padding:8px; font-weight:bold;">Audit Remarks:</td><td style="padding:8px;">${d.remarks || '-'}</td></tr>
+      </table>
+      <div style="margin-top:60px; display:flex; justify-content:space-between; font-size:12px;">
+        <div>System Stamp Date: ${new Date().toLocaleDateString()}</div>
+        <div style="border-top:1px solid #000; width:200px; text-align:center; padding-top:4px;">Authorized Approver Signature</div>
+      </div>
+    </div>
+  `;
+  window.print();
+}
+</script>
+</body>
+</html>
